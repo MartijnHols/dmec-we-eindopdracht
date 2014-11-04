@@ -7,16 +7,18 @@
 
 <div class="row">
     <div class="col-md-offset-3 col-md-6">
-        <form role="form" ng-submit="loginDocent()">
+        <form method="post" ng-submit="loginDocent()">
             <div class="form-group">
                 <label for="naam">Naam</label>
-                <input type="text" class="form-control" ng-model="name" placeholder="Naam">
+                <input type="text" class="form-control" id="naam" ng-model="username" placeholder="Naam">
             </div>
             <div class="form-group">
                 <label for="password">Wachtwoord</label>
-                <input type="password" class="form-control" ng-model="password" placeholder="Wachtwoord">
+                <input type="password" class="form-control" id="password" ng-model="password" placeholder="Wachtwoord">
             </div>
-            <button type="submit" class="pull-right btn btn-primary" ng-disabled="name.length==0||password.length==0">Aanmelden</button>
+            <button type="submit" class="pull-right btn btn-primary" ng-disabled="username.length==0||password.length==0||naam">Aanmelden</button>
+
+            <div ng-show="naam">Welkom, {{naam}}.</div>
         </form>
     </div>
 </div>

@@ -83,25 +83,21 @@ app.factory('VarService', function () {
 	};
 });
 
-var accounts = [
-	{ username: 'admin', password: 'admin'}
-], findAccount = function (username, password) {
-	for (var i = 0, len = accounts.length; i < len; i++) {
-		var account = accounts[i];
-		if (account.username === username && account.password === password) {
-			return account;
-		}
-	}
-};
-app.controller('docentLoginCtrl', function ($scope) {
+app.controller('docentLoginCtrl', function ($scope, $location, socketIO) {
 	$scope.loginDocent = function () {
-		var account = findAccount($scope.name, $scope.password);
-		if (account) {
-			alert('Welkom, ' + account.username);
-		} else {
-			alert('De ingevoerde gebruikersnaam en wachtwoord zijn fout.');
-		}
+		socketIO.emit("sign in", {
+			username: $scope.username,
+			password: $scope.password
+		});
 	};
+	socketIO.on("sign in success", function (username) {
+		$scope.naam = username;
+		$location.path('/docent/collecties');
+	});
+	socketIO.on("sign in error", function () {
+		alert('Helaas. :( De opgevoerde gebruikersnaam en wachtwoord zijn niet correct.');
+		$scope.password = '';
+	});
 });
 
 /**

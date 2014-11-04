@@ -3,54 +3,66 @@ var path = require('path');
 var http = require('http');
 var socketio = require('socket.io');
 
-/* * * * * * * * * * * * * * * * * * * * * * */
-/*     Setup                                 */
-/* * * * * * * * * * * * * * * * * * * * * * */
-
 var app = express();
 var httpServer = http.Server(app);
 var io = socketio(httpServer);
 
 app.use('/', express.static(path.join(__dirname, 'app')));
 
-var randomColor = require("./library/randomColor.js");
+var accounts = [
+		{ username: 'admin', name: 'Administrator', password: 'admin'}
+	],
+	findAccount = function (username, password) {
+		for (var i = 0, len = accounts.length; i < len; i++) {
+			var account = accounts[i];
+			if (account.username === username && account.password === password) {
+				return account;
+			}
+		}
+		return null;
+	},
+	accountsOnline = [];
 
-var players = {};  // Using an object istead of an array is
-// useful because we mostly ned to find players by id
+var collecties = [
+	{test:1}
+];
+
+//var players = {};  // Using an object istead of an array is
+
+
 
 io.on("connection", function (socket) {
 	console.log("CONNECT:", socket.id);
 
 	socket.on("disconnect", function () {
 		console.log("DISCONNECT", socket.id);
-		// Let's handle disconnects by informing everyone,
-		// and removing the player from our players.
-		socket.broadcast.emit("player has left", socket.id)  // the socket id is enough for
-		// all others to remove the player.
-		delete players[socket.id]  // this removes the player from the object.
+//		// Let's handle disconnects by informing everyone,
+//		// and removing the player from our players.
+//		socket.broadcast.emit("player has left", socket.id)  // the socket id is enough for
+//		// all others to remove the player.
+//		delete players[socket.id]  // this removes the player from the object.
+		delete accountsOnline[socket.id];
 	});
 
-	socket.on("sign in", function (name) {
-		console.log("SIGN IN:", name);
+	socket.on("sign in", function (accountInfo) {
+		console.log('Login attempt for: ' + accountInfo.username + ' (' + accountInfo.password + ')');
 
-		var newPlayer = {
-			name: name,
-			x: Math.floor(Math.random() * 300) + 50,
-			y: Math.floor(Math.random() * 300) + 50,
-			color: randomColor({ luminosity: 'bright'}),
-			socketId: socket.id     // This id is useful to identify players.
-			// We don't have to worry about duplicate player names.
-		};
-		players[newPlayer.socketId] = newPlayer;
-		socket.emit("sign in reply", players);
-		socket.broadcast.emit("new player", newPlayer);
-	})
-
-	socket.on("update player", function (playerInfo) {
-		socket.broadcast.emit("update other player", playerInfo);
-
-		players[playerInfo.socketId] = playerInfo;
+		var account = findAccount(accountInfo.username, accountInfo.password);
+		if (account) {
+			console.log('Identified ' + accountInfo.username + ' as ' + account.name);
+			accountsOnline[socket.id] = account;
+			socket.emit('sign in success', account.name);
+			return;
+		}
+		console.log('No such user found');
+		socket.emit('sign in error');
 	});
+
+//	socket.on("update player", function (playerInfo) {
+//		socket.broadcast.emit("update other player", playerInfo);
+//
+//		players[playerInfo.socketId] = playerInfo;
+//	});
 
 });
 
