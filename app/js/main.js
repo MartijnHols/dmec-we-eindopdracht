@@ -111,6 +111,7 @@ app.controller('docentLoginCtrl', function ($scope, $location, socketIO) {
  * Main controller, always initialized
  */
 app.controller('initCtrl', function ($scope, VarService) {
+
     VarService.rangLijst = [
         {positie: 1, naam: 'Dwayne', score: '8/8'},
         {positie: 2, naam: 'Martijn', score: '8/8'},
@@ -159,11 +160,10 @@ app.controller('studentRanglijstCtrl', function ($rootScope, $scope, VarService)
 
 });
 
-var collecties;
 /**
  * Collecties controller
  */
-app.controller('collectiesCtrl', function ($rootScope, $scope, socketIO) {
+app.controller('collectiesCtrl', function ($rootScope, $scope, socketIO, VarService) {
 	socketIO.emit('getCollections', null, function (error) {
 		if (error) {
 			throw new Error(error.message);
@@ -171,7 +171,7 @@ app.controller('collectiesCtrl', function ($rootScope, $scope, socketIO) {
 	});
 	socketIO.on('collectionUpdate', function (receivedCollecties) {
 		$scope.collecties = receivedCollecties;
-		collecties = receivedCollecties;
+		VarService.collecties = receivedCollecties;
 	});
 });
 
