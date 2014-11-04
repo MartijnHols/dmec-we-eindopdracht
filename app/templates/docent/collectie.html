@@ -32,10 +32,14 @@
                 <td>{{vraag.vraag}}</td>
                 <td>
                     <div class="btn-group pull-right">
-                        <button type="button" class="btn btn-default" ng-click="changeVisbility($index)">
+                        <a href="#/docent/collectie/{{id}}/antwoorden/{{vraag.id}}" title="Antwoorden toevoegen"  class="btn btn-default"><i
+                                class="fa fa-plus"></i></a>
+                        <button style="min-width:40px;" title="{{vraag.visible ? 'Wel' : 'Niet'}} zichtbaar" type="button"
+                                class="btn btn-default" ng-click="changeVisbility($index)">
                             <i ng-class="vraag.visible ? 'fa  fa-check-square-o' : 'fa fa-square-o'"></i>
                         </button>
-                        <button type="button" class="btn btn-danger" ng-click="deleteQuestion($index)"><i
+                        <button title="Deze vraag verwijderen" type="button" class="btn btn-danger"
+                                ng-click="deleteQuestion($index)"><i
                                 class="fa fa-trash-o"></i></button>
                     </div>
                 </td>
