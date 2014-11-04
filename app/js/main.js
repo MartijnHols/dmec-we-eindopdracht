@@ -47,6 +47,7 @@ app.factory('socketIO', function ($rootScope) {
  */
 app.config(['$routeProvider', function ($routeProvider) {
 	$routeProvider.when('/', {
+<<<<<<< HEAD
 			templateUrl: 'templates/student/aanmelden.html'
 		}).when('/wachten', {
 			templateUrl: 'templates/student/wachten.html'
@@ -75,6 +76,31 @@ app.config(['$routeProvider', function ($routeProvider) {
 		}).otherwise({
 			redirectTo: '/'
 		});
+=======
+		templateUrl: 'templates/student/aanmelden.html'
+	}).when('/wachten', {
+		templateUrl: 'templates/student/wachten.html'
+	}).when('/vraag/:vraagNummer', {
+		templateUrl: 'templates/student/vraag.html',
+		controller: 'studentVraagCtrl'
+	}).when('/ranglijst', {
+		templateUrl: 'templates/student/ranglijst.html',
+		controller: 'studentRanglijstCtrl'
+	}).when('/docent', {
+		templateUrl: 'templates/docent/login.html',
+		controller: 'docentLoginCtrl'
+	}).when('/docent/collecties', {
+		templateUrl: 'templates/docent/collecties.html',
+		controller: 'collectiesCtrl'
+	}).when('/docent/collectie/:id', {
+		templateUrl: 'templates/docent/collectie.html',
+		controller: 'collectieCtrl'
+	}).when('/link', {
+		templateUrl: 'templates/docent/link.html'
+	}).otherwise({
+		redirectTo: '/'
+	});
+>>>>>>> FETCH_HEAD
 }]);
 
 /**
@@ -89,50 +115,177 @@ app.factory('VarService', function () {
 	};
 });
 
+var accounts = [
+	{ username: 'admin', password: 'admin'}
+], findAccount = function (username, password) {
+	for (var i = 0, len = accounts.length; i < len; i++) {
+		var account = accounts[i];
+		if (account.username === username && account.password === password) {
+			return account;
+		}
+	}
+};
+app.controller('docentLoginCtrl', function ($scope) {
+	$scope.loginDocent = function () {
+		var account = findAccount($scope.name, $scope.password);
+		if (account) {
+			alert('Welkom, ' + account.username);
+		} else {
+			alert('De ingevoerde gebruikersnaam en wachtwoord zijn fout.');
+		}
+	};
+});
+
 /**
  * Main controller, always initialized
  */
 app.controller('initCtrl', function ($scope, VarService) {
-
 	VarService.collecties = [
-		{id: 1, naam: 'AJAX'},
-		{id: 2, naam: 'HTML 5'},
-		{id: 3, naam: 'CSS 3'},
-		{id: 4, naam: 'PHP'}
-	];
-
-	VarService.vragen = [
-		{collectie_id: 1, id: 0, vraag: 'Waar staat AJAX voor?', visible: true},
-		{collectie_id: 1, id: 1, vraag: 'Waar zou AJAX handig voor zijn?', visible: false},
-		{collectie_id: 1, id: 2, vraag: 'Waar is AJAX niet goed voor?', visible: true},
-		{collectie_id: 2, id: 3, vraag: 'Waar staat HTML 5 voor?', visible: true},
-		{collectie_id: 2, id: 4, vraag: 'Waar zou HTML 5 handig voor zijn?', visible: false},
-		{collectie_id: 2, id: 5, vraag: 'Waar is HTML 5 niet goed voor?', visible: true},
-		{collectie_id: 3, id: 6, vraag: 'Waar staat CSS 3 voor?', visible: true},
-		{collectie_id: 3, id: 7, vraag: 'Waar zou CSS 3 handig voor zijn?', visible: true},
-		{collectie_id: 3, id: 8, vraag: 'Waar is CSS 3 niet goed voor?', visible: true},
-		{collectie_id: 4, id: 9, vraag: 'Waar staat PHP voor?', visible: true},
-		{collectie_id: 4, id: 10, vraag: 'Waar zou PHP handig voor zijn?', visible: false},
-		{collectie_id: 4, id: 11, vraag: 'Waar is PHP niet goed voor?', visible: true}
-	];
-
-	/**
-	 * TODO: antwoorden komen in de vragen array
-	 * @type {{collectie_id: number, id: number, antwoord: string, waar: string}[]}
-	 */
-	VarService.antwoorden = [
-		{collectie_id: 1, id: 0, antwoord: 'Antwoord 1', waar: 'true'},
-		{collectie_id: 1, id: 1, antwoord: 'Antwoord 2', waar: 'false'},
-		{collectie_id: 1, id: 2, antwoord: 'Antwoord 3', waar: 'false'},
-		{collectie_id: 2, id: 3, antwoord: 'Antwoord 1', waar: 'false'},
-		{collectie_id: 2, id: 4, antwoord: 'Antwoord 2', waar: 'true'},
-		{collectie_id: 2, id: 5, antwoord: 'Antwoord 3', waar: 'false'},
-		{collectie_id: 3, id: 6, antwoord: 'Antwoord 1', waar: 'true'},
-		{collectie_id: 3, id: 7, antwoord: 'Antwoord 2', waar: 'false'},
-		{collectie_id: 3, id: 8, antwoord: 'Antwoord 3', waar: 'false'},
-		{collectie_id: 4, id: 9, antwoord: 'Antwoord 1', waar: 'true'},
-		{collectie_id: 4, id: 10, antwoord: 'Antwoord 2', waar: 'false'},
-		{collectie_id: 4, id: 11, antwoord: 'Antwoord 3', waar: 'false'}
+		{
+			id: 1,
+			naam: 'AJAX',
+			vragen: [
+				{
+					id: 0,
+					vraag: 'Waar kan je AJAX voor gebruiken?',
+					visible: true,
+					antwoorden: [
+						{id: 0, antwoord: 'Het asynchroon updaten van content.', waar: false},
+						{id: 1, antwoord: 'Het asynchroon verzenden en ophalen van gegevens.', waar: true},
+						{id: 2, antwoord: 'Het asynchroon wijzigen van de pagina.', waar: false},
+						{id: 3, antwoord: 'Als protocol voor de verzending van data.', waar: false},
+					]
+				},
+				{
+					id: 1,
+					vraag: 'Waar zou AJAX handig voor zijn?',
+					visible: false,
+					antwoorden: [
+						{id: 0, antwoord: 'Antwoord 1', waar: true},
+						{id: 1, antwoord: 'Antwoord 2', waar: false},
+						{id: 2, antwoord: 'Antwoord 3', waar: false},
+					]
+				},
+				{
+					id: 2,
+					vraag: 'Waar is AJAX niet goed voor?',
+					visible: true,
+					antwoorden: [
+						{id: 0, antwoord: 'Antwoord 1', waar: true},
+						{id: 1, antwoord: 'Antwoord 2', waar: false},
+						{id: 2, antwoord: 'Antwoord 3', waar: false},
+					]
+				}
+			]
+		},
+		{
+			id: 2,
+			naam: 'HTML 5',
+			vragen: [
+				{
+					id: 3,
+					vraag: 'Waar staat HTML 5 voor?',
+					visible: true,
+					antwoorden: [
+						{id: 0, antwoord: 'Antwoord 1', waar: true},
+						{id: 1, antwoord: 'Antwoord 2', waar: false},
+						{id: 2, antwoord: 'Antwoord 3', waar: false},
+					]
+				},
+				{
+					id: 4,
+					vraag: 'Waar zou HTML 5 handig voor zijn?',
+					visible: false,
+					antwoorden: [
+						{id: 0, antwoord: 'Antwoord 1', waar: true},
+						{id: 1, antwoord: 'Antwoord 2', waar: false},
+						{id: 2, antwoord: 'Antwoord 3', waar: false},
+					]
+				},
+				{
+					id: 5,
+					vraag: 'Waar is HTML 5 niet goed voor?',
+					visible: true,
+					antwoorden: [
+						{id: 0, antwoord: 'Antwoord 1', waar: true},
+						{id: 1, antwoord: 'Antwoord 2', waar: false},
+						{id: 2, antwoord: 'Antwoord 3', waar: false},
+					]
+				},
+			]
+		},
+		{
+			id: 3,
+			naam: 'CSS 3',
+			vragen: [
+				{
+					id: 6,
+					vraag: 'Waar staat CSS 3 voor?',
+					visible: true,
+					antwoorden: [
+						{id: 0, antwoord: 'Antwoord 1', waar: true},
+						{id: 1, antwoord: 'Antwoord 2', waar: false},
+						{id: 2, antwoord: 'Antwoord 3', waar: false},
+					]
+				},
+				{
+					id: 7,
+					vraag: 'Waar zou CSS 3 handig voor zijn?',
+					visible: true,
+					antwoorden: [
+						{id: 0, antwoord: 'Antwoord 1', waar: true},
+						{id: 1, antwoord: 'Antwoord 2', waar: false},
+						{id: 2, antwoord: 'Antwoord 3', waar: false},
+					]
+				},
+				{
+					id: 8,
+					vraag: 'Waar is CSS 3 niet goed voor?',
+					visible: true,
+					antwoorden: [
+						{id: 0, antwoord: 'Antwoord 1', waar: true},
+						{id: 1, antwoord: 'Antwoord 2', waar: false},
+						{id: 2, antwoord: 'Antwoord 3', waar: false},
+					]
+				},
+			]
+		},
+		{
+			id: 4,
+			naam: 'PHP',
+			vragen: [
+				{
+					id: 9,
+					vraag: 'Waar staat PHP voor?',
+					visible: true,
+					antwoorden: [
+						{id: 0, antwoord: 'Antwoord 1', waar: true},
+						{id: 1, antwoord: 'Antwoord 2', waar: false},
+						{id: 2, antwoord: 'Antwoord 3', waar: false},
+					]
+				},
+				{
+					id: 10,
+					vraag: 'Waar zou PHP handig voor zijn?',
+					visible: false,
+					antwoorden: [
+						{id: 0, antwoord: 'Antwoord 1', waar: true},
+						{id: 1, antwoord: 'Antwoord 2', waar: false},
+						{id: 2, antwoord: 'Antwoord 3', waar: false},
+					]
+				},
+				{
+					id: 11,
+					vraag: 'Waar is PHP niet goed voor?',
+					visible: true,
+					antwoorden: [
+						{id: 0, antwoord: 'Antwoord 1', waar: true},
+						{id: 1, antwoord: 'Antwoord 2', waar: false},
+						{id: 2, antwoord: 'Antwoord 3', waar: false},
+					]
+				}
+			]
+		}
 	];
 
 	VarService.rangLijst = [
