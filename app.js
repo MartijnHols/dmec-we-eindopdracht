@@ -212,7 +212,10 @@ io.on("connection", function (socket) {
 	});
 
 	socket.on("getCollections", function (name, fn) {
-		if (!accountController.isLoggedIn(socket.id)) return fn({message:'Niet ingelogd.'});
+        /**
+         * TODO: Tijdelijk uitgezet voor Dwayne
+         */
+//		if (!accountController.isLoggedIn(socket.id)) return fn({message:'Niet ingelogd.'});
 
 		console.log(socket.id + ': getCollections');
 		socket.emit('collectionUpdate', collecties);
