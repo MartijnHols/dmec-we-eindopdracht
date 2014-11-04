@@ -111,154 +111,6 @@ app.controller('docentLoginCtrl', function ($scope, $location, socketIO) {
  * Main controller, always initialized
  */
 app.controller('initCtrl', function ($scope, VarService) {
-    VarService.collecties = [
-        {
-            id: 1,
-            naam: 'AJAX',
-            vragen: [
-                {
-                    id: 1,
-                    vraag: 'Waar kan je AJAX voor gebruiken?',
-                    visible: true,
-                    antwoorden: [
-                        {id: 0, antwoord: 'Het asynchroon updaten van content.', waar: false},
-                        {id: 1, antwoord: 'Het asynchroon verzenden en ophalen van gegevens.', waar: true},
-                        {id: 2, antwoord: 'Het asynchroon wijzigen van de pagina.', waar: false},
-                        {id: 3, antwoord: 'Als protocol voor de verzending van data.', waar: false}
-                    ]
-                },
-                {
-                    id: 2,
-                    vraag: 'Waar zou AJAX handig voor zijn?',
-                    visible: false,
-                    antwoorden: [
-                        {id: 0, antwoord: 'Antwoord 1', waar: true},
-                        {id: 1, antwoord: 'Antwoord 2', waar: false},
-                        {id: 2, antwoord: 'Antwoord 3', waar: false}
-                    ]
-                },
-                {
-                    id: 3,
-                    vraag: 'Waar is AJAX niet goed voor?',
-                    visible: true,
-                    antwoorden: [
-                        {id: 0, antwoord: 'Antwoord 1', waar: true},
-                        {id: 1, antwoord: 'Antwoord 2', waar: false},
-                        {id: 2, antwoord: 'Antwoord 3', waar: false}
-                    ]
-                }
-            ]
-        },
-        {
-            id: 2,
-            naam: 'HTML 5',
-            vragen: [
-                {
-                    id: 4,
-                    vraag: 'Waar staat HTML 5 voor?',
-                    visible: true,
-                    antwoorden: [
-                        {id: 0, antwoord: 'Antwoord 1', waar: true},
-                        {id: 1, antwoord: 'Antwoord 2', waar: false},
-                        {id: 2, antwoord: 'Antwoord 3', waar: false}
-                    ]
-                },
-                {
-                    id: 5,
-                    vraag: 'Waar zou HTML 5 handig voor zijn?',
-                    visible: false,
-                    antwoorden: [
-                        {id: 0, antwoord: 'Antwoord 1', waar: true},
-                        {id: 1, antwoord: 'Antwoord 2', waar: false},
-                        {id: 2, antwoord: 'Antwoord 3', waar: false}
-                    ]
-                },
-                {
-                    id: 6,
-                    vraag: 'Waar is HTML 5 niet goed voor?',
-                    visible: true,
-                    antwoorden: [
-                        {id: 0, antwoord: 'Antwoord 1', waar: true},
-                        {id: 1, antwoord: 'Antwoord 2', waar: false},
-                        {id: 2, antwoord: 'Antwoord 3', waar: false}
-                    ]
-                }
-            ]
-        },
-        {
-            id: 3,
-            naam: 'CSS 3',
-            vragen: [
-                {
-                    id: 7,
-                    vraag: 'Waar staat CSS 3 voor?',
-                    visible: true,
-                    antwoorden: [
-                        {id: 0, antwoord: 'Antwoord 1', waar: true},
-                        {id: 1, antwoord: 'Antwoord 2', waar: false},
-                        {id: 2, antwoord: 'Antwoord 3', waar: false}
-                    ]
-                },
-                {
-                    id: 8,
-                    vraag: 'Waar zou CSS 3 handig voor zijn?',
-                    visible: true,
-                    antwoorden: [
-                        {id: 0, antwoord: 'Antwoord 1', waar: true},
-                        {id: 1, antwoord: 'Antwoord 2', waar: false},
-                        {id: 2, antwoord: 'Antwoord 3', waar: false}
-                    ]
-                },
-                {
-                    id: 9,
-                    vraag: 'Waar is CSS 3 niet goed voor?',
-                    visible: true,
-                    antwoorden: [
-                        {id: 0, antwoord: 'Antwoord 1', waar: true},
-                        {id: 1, antwoord: 'Antwoord 2', waar: false},
-                        {id: 2, antwoord: 'Antwoord 3', waar: false}
-                    ]
-                }
-            ]
-        },
-        {
-            id: 4,
-            naam: 'PHP',
-            vragen: [
-                {
-                    id: 10,
-                    vraag: 'Waar staat PHP voor?',
-                    visible: true,
-                    antwoorden: [
-                        {id: 0, antwoord: 'Antwoord 1', waar: true},
-                        {id: 1, antwoord: 'Antwoord 2', waar: false},
-                        {id: 2, antwoord: 'Antwoord 3', waar: false}
-                    ]
-                },
-                {
-                    id: 11,
-                    vraag: 'Waar zou PHP handig voor zijn?',
-                    visible: false,
-                    antwoorden: [
-                        {id: 0, antwoord: 'Antwoord 1', waar: true},
-                        {id: 1, antwoord: 'Antwoord 2', waar: false},
-                        {id: 2, antwoord: 'Antwoord 3', waar: false}
-                    ]
-                },
-                {
-                    id: 12,
-                    vraag: 'Waar is PHP niet goed voor?',
-                    visible: true,
-                    antwoorden: [
-                        {id: 0, antwoord: 'Antwoord 1', waar: true},
-                        {id: 1, antwoord: 'Antwoord 2', waar: false},
-                        {id: 2, antwoord: 'Antwoord 3', waar: false}
-                    ]
-                }
-            ]
-        }
-    ];
-
     VarService.rangLijst = [
         {positie: 1, naam: 'Dwayne', score: '8/8'},
         {positie: 2, naam: 'Martijn', score: '8/8'},
@@ -307,13 +159,20 @@ app.controller('studentRanglijstCtrl', function ($rootScope, $scope, VarService)
 
 });
 
+var collecties;
 /**
  * Collecties controller
  */
-app.controller('collectiesCtrl', function ($rootScope, $scope, VarService) {
-
-    $scope.collecties = VarService.collecties;
-
+app.controller('collectiesCtrl', function ($rootScope, $scope, socketIO) {
+	socketIO.emit('getCollections', null, function (error) {
+		if (error) {
+			throw new Error(error.message);
+		}
+	});
+	socketIO.on('collectionUpdate', function (receivedCollecties) {
+		$scope.collecties = receivedCollecties;
+		collecties = receivedCollecties;
+	});
 });
 
 /**
