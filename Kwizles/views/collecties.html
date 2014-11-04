@@ -1,0 +1,23 @@
+<div class="row">
+    <div class="col-md-12">
+        <h1>Collecties</h1>
+        <hr/>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-9">
+        <div class="list-group">
+            <a ng-repeat="collectie in collecties | filter:search" href="#/docent/collectie/{{collectie.id}}"
+               class="list-group-item">{{collectie.naam}}
+                <span class="badge"
+                      title="aantal vragen in deze collectie">{{countQuestionInCollection(collectie.id)}}</span>
+            </a>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="Zoeken in collectie's" ng-model="search.$">
+        </div>
+    </div>
+</div>

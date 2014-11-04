@@ -1,0 +1,75 @@
+<div class="row">
+    <div class="col-md-12">
+        <h1>Collectie <span class="label label-primary">{{getCollectionName(id)}}</span></h1>
+        <hr/>
+    </div>
+</div>
+
+<div class="row" ng-show="newQuestion">
+    <div class="col-md-9">
+        <input type="text" class="form-control" placeholder="Vul hier uw nieuwe vraag in" ng-model="newQuestionInput"
+               ng-minlength="1">
+    </div>
+    <div class="btn-group col-md-3">
+        <button type="button" class="btn btn-danger col-md-6" ng-click="resetForm()"><i class="fa fa-times"></i>
+        </button>
+        <button type="button" class="btn btn-success col-md-6" ng-click="addQuestion(id, newQuestionInput)"><i
+                class="fa fa-save"></i></button>
+    </div>
+</div>
+
+<div class="row" ng-show="newQuestion">
+    <div class="col-md-12">
+        <hr/>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-9">
+        <table class="table table-striped table-hover">
+            <tbody ui:sortable ng:model="vragen">
+            <tr ng-repeat="vraag in vragen | filter:search | filter: {collectie_id:id}" style="cursor: move;">
+                <td>{{vraag.vraag}}</td>
+                <td>
+                    <div class="btn-group pull-right">
+                        <button type="button" class="btn btn-default"><i ng-class="vraag.visible ? 'fa  fa-check-square-o' : 'fa fa-square-o'"></i></button>
+                        <button type="button" class="btn btn-danger" ng-click="deleteQuestion(vraag.id)"><i
+                                class="fa fa-trash-o"></i></button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group" ng-hide="newQuestion">
+            <button type="button" ng-click="newQuestion = !newQuestion" class="btn btn-success col-md-12">Vraag
+                toevoegen <i class="fa fa-plus"></i></button>
+        </div>
+        <div class="form-group">
+            <a href="#/docent/collecties" class="btn btn-default col-md-12">Terug naar collectie's <i
+                    class="fa fa-reply"></i></a>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-default col-md-12" ng-click="openStudentLink()">Open link Popup <i
+                    class="fa fa-share-square-o"></i></button>
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="Zoeken in vragen" ng-model="search.$">
+        </div>
+    </div>
+</div>
+
+<style>
+    tbody tr td {
+        vertical-align: middle !important;
+    }
+
+    tbody tr td .btn-group {
+        visibility: hidden;;
+    }
+
+    tbody tr:hover td .btn-group {
+        visibility: visible;
+    }
+</style>
