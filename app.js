@@ -11,10 +11,7 @@ var app = express();
 var httpServer = http.Server(app);
 var io = socketio(httpServer);
 
-app.use(express.static(path.join(__dirname, 'apps/main')));
-app.use('/', express.static(path.join(__dirname, 'apps/student')));
-app.use('/docent', express.static(path.join(__dirname, 'apps/docent')));
-app.use('/popup', express.static(path.join(__dirname, 'apps/popup')));
+app.use('/', express.static(path.join(__dirname, 'app')));
 
 var randomColor = require("./library/randomColor.js");
 
