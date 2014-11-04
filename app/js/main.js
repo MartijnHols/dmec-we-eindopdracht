@@ -64,7 +64,13 @@ app.config(['$routeProvider', function ($routeProvider) {
 		}).when('/docent/collectie/:id', {
 			templateUrl: 'templates/docent/collectie.html',
 			controller: 'collectieCtrl'
-		}).when('/link', {
+        }).when('/docent/deelnemers', {
+            templateUrl: 'templates/docent/deelnemers.html',
+            controller: 'deelnemersCtrl'
+		}).when('/docent/vraag/:vraagId/:collectieId', {
+            templateUrl: 'templates/docent/vraag.html',
+            controller: 'docentVraagCtrl'
+        }).when('/link', {
 			templateUrl: 'templates/docent/link.html'
 		}).otherwise({
 			redirectTo: '/'
@@ -78,7 +84,8 @@ app.factory('VarService', function () {
 	return {
 		collecties: null,
 		vragen: null,
-		rangLijst: null
+		rangLijst: null,
+        deelnemers: null
 	};
 });
 
@@ -138,6 +145,18 @@ app.controller('initCtrl', function ($scope, VarService) {
 		{positie: 7, naam: 'Dwayne', score: '0/8'},
 		{positie: 8, naam: 'Martijn', score: '0/8'}
 	];
+
+    VarService.deelnemers = [
+        {id: 1, naam: 'Dwayne'},
+        {id: 2, naam: 'Martijn'},
+        {id: 3, naam: 'Dwayne'},
+        {id: 4, naam: 'Dwayne'},
+        {id: 5, naam: 'Martijn'},
+        {id: 6, naam: 'Dwayne'},
+        {id: 7, naam: 'Dwayne'},
+        {id: 8, naam: 'Martijn'},
+        {id: 9, naam: 'Dwayne'}
+    ];
 
 });
 
@@ -241,6 +260,26 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
 		}
 		return name;
 	}
+
+});
+
+/**
+ * Deelnemers controller
+ */
+app.controller('deelnemersCtrl', function ($rootScope, $scope, VarService) {
+
+    $scope.deelnemers = VarService.deelnemers;
+
+});
+
+/**
+ * Docent vraag controller
+ */
+app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, VarService) {
+
+    $scope.collectieId = $routeParams.collectieId;
+    $scope.vraagId = $routeParams.vraagId;
+    $scope.vragen = VarService.vragen;
 
 });
 
