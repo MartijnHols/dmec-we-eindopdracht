@@ -356,11 +356,18 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
 
     $scope.deleteQuestion = function (index) {
         VarService.collecties[$routeParams.id - 1].vragen.splice(index, 1);
-
     };
 
     $scope.openStudentLink = function () {
         $window.open('#/student/link');
+    };
+
+    $scope.changeVisbility = function (index) {
+        if(VarService.collecties[$routeParams.id - 1].vragen[index].visible){
+            VarService.collecties[$routeParams.id - 1].vragen[index].visible = false;
+        } else {
+            VarService.collecties[$routeParams.id - 1].vragen[index].visible = true;
+        }
     };
 
     // Private function

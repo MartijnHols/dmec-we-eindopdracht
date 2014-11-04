@@ -32,8 +32,9 @@
                 <td>{{vraag.vraag}}</td>
                 <td>
                     <div class="btn-group pull-right">
-                        <button type="button" class="btn btn-default"><i
-                                ng-class="vraag.visible ? 'fa  fa-check-square-o' : 'fa fa-square-o'"></i></button>
+                        <button type="button" class="btn btn-default" ng-click="changeVisbility($index)">
+                            <i ng-class="vraag.visible ? 'fa  fa-check-square-o' : 'fa fa-square-o'"></i>
+                        </button>
                         <button type="button" class="btn btn-danger" ng-click="deleteQuestion($index)"><i
                                 class="fa fa-trash-o"></i></button>
                     </div>
@@ -46,6 +47,10 @@
         <div class="form-group" ng-hide="newQuestion">
             <button type="button" ng-click="newQuestion = !newQuestion" class="btn btn-success col-md-12">Vraag
                 toevoegen <i class="fa fa-plus"></i></button>
+        </div>
+        <div class="form-group">
+            <a href="#/docent/deelnemers" class="btn btn-primary col-md-12">Ga naar deelnemers <i
+                    class="fa fa-reply fa-flip-horizontal"></i></a>
         </div>
         <div class="form-group">
             <a href="#/docent/collecties" class="btn btn-default col-md-12">Terug naar collectie's <i
