@@ -11,7 +11,7 @@
             <a ng-repeat="collectie in collecties | filter:search" href="#/docent/collectie/{{collectie.id}}"
                class="list-group-item">{{collectie.naam}}
                 <span class="badge"
-                      title="aantal vragen in deze collectie">{{countQuestionInCollection(collectie.id)}}</span>
+                      title="aantal vragen in deze collectie">{{collectie.vragen.length}}</span>
             </a>
         </div>
     </div>

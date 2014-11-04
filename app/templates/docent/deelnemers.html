@@ -1,0 +1,25 @@
+<div class="row">
+    <div class="col-md-12">
+        <h1>Deelnemers</h1>
+        <hr/>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-9">
+        <ul class="list-group">
+            <li ng-repeat="deelnemer in deelnemers | filter:search"
+               class="list-group-item">{{deelnemer.naam}}
+            </li>
+        </ul>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <a href="#/docent/vraag/1/1" class="btn btn-success col-md-12">Start Kwizles <i
+                    class="fa fa-play"></i></a>
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="Zoeken in deelnemers" ng-model="search.$">
+        </div>
+    </div>
+</div>

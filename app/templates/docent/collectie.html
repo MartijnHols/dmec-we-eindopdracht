@@ -28,12 +28,13 @@
     <div class="col-md-9">
         <table class="table table-striped table-hover">
             <tbody ui:sortable ng:model="vragen">
-            <tr ng-repeat="vraag in vragen | filter:search | filter: {collectie_id:id}" style="cursor: move;">
+            <tr ng-repeat="vraag in vragen | filter:search" style="cursor: move;">
                 <td>{{vraag.vraag}}</td>
                 <td>
                     <div class="btn-group pull-right">
-                        <button type="button" class="btn btn-default"><i ng-class="vraag.visible ? 'fa  fa-check-square-o' : 'fa fa-square-o'"></i></button>
-                        <button type="button" class="btn btn-danger" ng-click="deleteQuestion(vraag.id)"><i
+                        <button type="button" class="btn btn-default"><i
+                                ng-class="vraag.visible ? 'fa  fa-check-square-o' : 'fa fa-square-o'"></i></button>
+                        <button type="button" class="btn btn-danger" ng-click="deleteQuestion($index)"><i
                                 class="fa fa-trash-o"></i></button>
                     </div>
                 </td>
@@ -63,13 +64,5 @@
 <style>
     tbody tr td {
         vertical-align: middle !important;
-    }
-
-    tbody tr td .btn-group {
-        visibility: hidden;;
-    }
-
-    tbody tr:hover td .btn-group {
-        visibility: visible;
     }
 </style>
