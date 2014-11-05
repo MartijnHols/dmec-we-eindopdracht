@@ -468,7 +468,7 @@ app.controller('deelnemersCtrl', function ($rootScope, $scope, VarService) {
 /**
  * Docent vraag controller
  */
-app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, VarService) {
+app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, VarService, $location) {
 
     $scope.collectieId = $routeParams.collectieId;
     $scope.vraagId = $routeParams.vraagId;
@@ -477,6 +477,67 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
     $scope.processTime = 10; // In seconds
     $scope.processBar = 100;
     $scope.nextButton = false;
+
+    if($scope.vraagId == VarService.collecties[$scope.collectieId - 1].vragen.length){
+       $scope.nextButtonText = 'Bekijk resulaten';
+    } else {
+        $scope.nextButtonText = 'Volgende vraag';
+    }
+
+    $scope.nextQuestion = function(){
+        if($scope.vraagId == VarService.collecties[$scope.collectieId - 1].vragen.length){
+            console.log('einde');
+            $location.path('/docent/vraag-resulaten/' + $scope.collectieId + '/1');
+        } else {
+            $scope.vraagId++
+            $location.path('/docent/vraag/' + $scope.collectieId + '/' + $scope.vraagId);
+        }
+    };
+
+    // Private functions
+    var updateBar = function () {
+        $scope.$apply(function () {
+            if ($scope.processTime >= 0){
+                var tmp_var = ($scope.processTime * 1000) / 100;
+                $scope.processBar = tmp_var;
+                $scope.processTime -= 0.1;
+            } else {
+                $scope.nextButton = true;
+            }
+        });
+    };
+
+    setInterval(updateBar, 100);
+});
+
+/**
+ * Docent vraag controller
+ */
+app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, VarService, $location) {
+
+    $scope.collectieId = $routeParams.collectieId;
+    $scope.vraagId = $routeParams.vraagId;
+    $scope.antwoorden = VarService.collecties[$scope.collectieId - 1].vragen[$scope.vraagId - 1].antwoorden;
+    $scope.vraag = VarService.collecties[$scope.collectieId - 1].vragen[$scope.vraagId - 1].vraag;
+    $scope.processTime = 10; // In seconds
+    $scope.processBar = 100;
+    $scope.nextButton = false;
+
+    if($scope.vraagId == VarService.collecties[$scope.collectieId - 1].vragen.length){
+        $scope.nextButtonText = 'Bekijk resulaten';
+    } else {
+        $scope.nextButtonText = 'Volgende vraag';
+    }
+
+    $scope.nextQuestion = function(){
+        if($scope.vraagId == VarService.collecties[$scope.collectieId - 1].vragen.length){
+            console.log('einde');
+            $location.path('/docent/vraag-resulaten/' + $scope.collectieId + '/1');
+        } else {
+            $scope.vraagId++
+            $location.path('/docent/vraag/' + $scope.collectieId + '/' + $scope.vraagId);
+        }
+    };
 
     // Private functions
     var updateBar = function () {
