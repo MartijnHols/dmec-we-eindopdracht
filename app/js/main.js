@@ -42,7 +42,6 @@ app.factory('socketIO', function ($rootScope) {
 });
 // end of Socket.IO service for AngularJS
 
-
 /**
  * Our angular routes
  */
@@ -76,6 +75,9 @@ app.config(['$routeProvider', function ($routeProvider) {
 	}).when('/docent/vraag-resulaten/:collectieId/:vraagId', {
 		templateUrl: 'templates/docent/vraag-resulaten.html',
 		controller: 'docentVraagResultatenCtrl'
+	}).when('/docent/ranglijst', {
+		templateUrl: 'templates/docent/ranglijst.html',
+		controller: 'docentRanglijstCtrl'
 	}).when('/link', {
 		templateUrl: 'templates/docent/link.html'
 	}).otherwise({
@@ -134,27 +136,17 @@ app.controller('studentLoginCtrl', function ($scope, $location, socketIO) {
  */
 app.controller('initCtrl', function ($scope, VarService) {
 
-	VarService.rangLijst = [
-		{positie: 1, naam: 'Dwayne', score: '8/8'},
-		{positie: 2, naam: 'Martijn', score: '8/8'},
-		{positie: 3, naam: 'Dwayne', score: '7/8'},
-		{positie: 4, naam: 'Martijn', score: '6/8'},
-		{positie: 5, naam: 'Dwayne', score: '5/8'},
-		{positie: 6, naam: 'Martijn', score: '4/8'},
-		{positie: 7, naam: 'Dwayne', score: '0/8'},
-		{positie: 8, naam: 'Martijn', score: '0/8'}
-	];
-
 	VarService.deelnemers = [
-		{id: 1, naam: 'Dwayne'},
-		{id: 2, naam: 'Martijn'},
-		{id: 3, naam: 'Dwayne'},
-		{id: 4, naam: 'Dwayne'},
-		{id: 5, naam: 'Martijn'},
-		{id: 6, naam: 'Dwayne'},
-		{id: 7, naam: 'Dwayne'},
-		{id: 8, naam: 'Martijn'},
-		{id: 9, naam: 'Dwayne'}
+		{id: 1, naam: 'Dwayne', score: 33},
+		{id: 2, naam: 'Martijn', score: 22},
+		{id: 3, naam: 'Jaap', score: 88},
+		{id: 4, naam: 'Karel', score: 34},
+		{id: 5, naam: 'Henk', score: 67},
+		{id: 6, naam: 'Jan', score: 12},
+		{id: 7, naam: 'Geert', score: 121},
+		{id: 8, naam: 'Joost', score: 23},
+		{id: 9, naam: 'Piet', score: 25},
+		{id: 10, naam: 'Henk', score: 39}
 	];
 
 	VarService.collecties = [
@@ -502,50 +494,6 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
 });
 
 /**
- * Docent vraag controller
- */
-app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, VarService, $location) {
-	$scope.collectieId = $routeParams.collectieId;
-	$scope.vraagId = $routeParams.vraagId;
-	$scope.antwoorden = VarService.collecties[$scope.collectieId - 1].vragen[$scope.vraagId - 1].antwoorden;
-	$scope.vraag = VarService.collecties[$scope.collectieId - 1].vragen[$scope.vraagId - 1].vraag;
-	$scope.processTime = 10; // In seconds
-	$scope.processBar = 100;
-	$scope.nextButton = false;
-
-	if ($scope.vraagId == VarService.collecties[$scope.collectieId - 1].vragen.length) {
-		$scope.nextButtonText = 'Bekijk resulaten';
-	} else {
-		$scope.nextButtonText = 'Volgende vraag';
-	}
-
-	$scope.nextQuestion = function () {
-		if ($scope.vraagId == VarService.collecties[$scope.collectieId - 1].vragen.length) {
-			console.log('einde');
-			$location.path('/docent/vraag-resulaten/' + $scope.collectieId + '/1');
-		} else {
-			$scope.vraagId++;
-			$location.path('/docent/vraag/' + $scope.collectieId + '/' + $scope.vraagId);
-		}
-	};
-
-	// Private functions
-	var updateBar = function () {
-		$scope.$apply(function () {
-			if ($scope.processTime >= 0) {
-				var tmp_var = ($scope.processTime * 1000) / 100;
-				$scope.processBar = tmp_var;
-				$scope.processTime -= 0.1;
-			} else {
-				$scope.nextButton = true;
-			}
-		});
-	};
-
-	setInterval(updateBar, 100);
-});
-
-/**
  * Docent vraag resultaten controller
  */
 app.controller('docentVraagResultatenCtrl', function ($rootScope, $scope, $routeParams, VarService, $location) {
@@ -563,11 +511,21 @@ app.controller('docentVraagResultatenCtrl', function ($rootScope, $scope, $route
 
 	$scope.nextQuestion = function () {
 		if ($scope.vraagId == VarService.collecties[$scope.collectieId - 1].vragen.length) {
+			console.log('test');
 			$location.path('/docent/ranglijst');
 		} else {
 			$scope.vraagId++;
 			$location.path('/docent/vraag-resulaten/' + $scope.collectieId + '/' + $scope.vraagId);
 		}
 	};
+
+});
+
+/**
+ * Docent ranglijst controller
+ */
+app.controller('docentRanglijstCtrl', function ($rootScope, $scope, $routeParams, VarService, $location) {
+
+	$scope.rangLijst = VarService.deelnemers;
 
 });
