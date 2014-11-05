@@ -1,6 +1,9 @@
 # Martijn
+- Startknop/quiz
+- Deelnemers lijst
+- Alles met vragen en antwoorden
+
 
 # Dwayne
 - Foutmelding bij foutief inlog
-- Popup scherm bijwerken
-- Resultaten vragen iteratie maken
+- Popup scherm moet ip adres ophalen

@@ -42,6 +42,7 @@ app.factory('socketIO', function ($rootScope) {
 });
 // end of Socket.IO service for AngularJS
 
+
 /**
  * Our angular routes
  */
@@ -479,7 +480,7 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
 			console.log('einde');
 			$location.path('/docent/vraag-resulaten/' + $scope.collectieId + '/1');
 		} else {
-			$scope.vraagId++
+			$scope.vraagId++;
 			$location.path('/docent/vraag/' + $scope.collectieId + '/' + $scope.vraagId);
 		}
 	};
@@ -523,7 +524,7 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
 			console.log('einde');
 			$location.path('/docent/vraag-resulaten/' + $scope.collectieId + '/1');
 		} else {
-			$scope.vraagId++
+			$scope.vraagId++;
 			$location.path('/docent/vraag/' + $scope.collectieId + '/' + $scope.vraagId);
 		}
 	};
@@ -564,7 +565,7 @@ app.controller('docentVraagResultatenCtrl', function ($rootScope, $scope, $route
 		if ($scope.vraagId == VarService.collecties[$scope.collectieId - 1].vragen.length) {
 			$location.path('/docent/ranglijst');
 		} else {
-			$scope.vraagId++
+			$scope.vraagId++;
 			$location.path('/docent/vraag-resulaten/' + $scope.collectieId + '/' + $scope.vraagId);
 		}
 	};
