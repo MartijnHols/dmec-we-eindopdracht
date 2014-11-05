@@ -6,10 +6,28 @@
 </div>
 
 <div class="row">
+    <div class="col-md-9">
+        <h4>{{vraag}}</h4>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group pull-right">
+            <button ng-class="nextButton ? 'btn btn-success' : 'btn btn-success disabled'">Volgende vraag <i
+                    class="fa fa-reply fa-flip-horizontal"></i></button>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <hr/>
+    </div>
+</div>
+
+<div class="row">
     <div class="col-md-12">
         <div class="progress">
             <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="20" aria-valuemin="0"
-                 aria-valuemax="100" style="width: 20%">
+                 aria-valuemax="100" style="width: {{processBar}}%">
                 <span class="sr-only">20% Complete</span>
             </div>
         </div>
@@ -18,8 +36,23 @@
 
 <div class="row">
     <div class="col-md-12">
-        <ul class="list-group">
-            <li ng-repeat="vraag in vragen | filter: {collectie_id:vraagNummer}" href="#" class="list-group-item">{{vraag.vraag}}</li>
-        </li>
+        <div ng-repeat="antwoord in antwoorden" class="panel panel-default">
+            <div class="panel-heading">{{antwoord.antwoord}} <span class="label label-default pull-right">{{antwoord.score}}</span></div>
+            <div class="panel-body">
+                <span class="label label-primary">Dwayne</span>
+                <span class="label label-primary">Dwayne</span>
+                <span class="label label-primary">Dwayne</span>
+                <span class="label label-primary">Dwayne</span>
+            </div>
+        </div>
+        <div class="panel panel-danger">
+            <div class="panel-heading">Niet beantwoord</div>
+            <div class="panel-body">
+                <span class="label label-primary">Dwayne</span>
+                <span class="label label-primary">Dwayne</span>
+                <span class="label label-primary">Dwayne</span>
+                <span class="label label-primary">Dwayne</span>
+            </div>
+        </div>
     </div>
 </div>
