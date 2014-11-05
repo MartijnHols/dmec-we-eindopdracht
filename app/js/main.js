@@ -110,18 +110,18 @@ app.controller('docentLoginCtrl', function ($scope, $location, socketIO) {
 
 app.controller('studentLoginCtrl', function ($scope, $location, socketIO) {
 	$scope.loginStudent = function () {
-		socketIO.emit("player-sign-in", {
-			username: $scope.username,
-			quizId: $scope.quizToken
+		socketIO.emit('player-sign-in', {
+			username: $scope.naam,
+			quizId: $scope.token
+		}, function (error) {
+			if (error) {
+				alert(error.message);
+			}
 		});
 	};
-	socketIO.on("sign in success", function (username) {
+	socketIO.on('player-sign-in-success', function (username) {
 		$scope.naam = username;
-		$location.path('/docent/collecties');
-	});
-	socketIO.on("sign in error", function () {
-		alert('Helaas. :( De opgevoerde gebruikersnaam en wachtwoord zijn niet correct.');
-		$scope.password = '';
+		$location.path('/wachten');
 	});
 });
 
@@ -301,27 +301,6 @@ app.controller('initCtrl', function ($scope, VarService) {
         }
     ];
 
-
-});
-
-app.controller('docentLoginCtrl', function ($scope, $location, socketIO) {
-
-    $scope.loginDocent = function () {
-        socketIO.emit("sign in", {
-            username: $scope.username,
-            password: $scope.password
-        });
-    };
-
-    socketIO.on("sign in success", function (username) {
-        $scope.naam = username;
-        $location.path('/docent/collecties');
-    });
-
-    socketIO.on("sign in error", function () {
-        alert('Helaas. :( De opgevoerde gebruikersnaam en wachtwoord zijn niet correct.');
-        $scope.password = '';
-    });
 
 });
 
