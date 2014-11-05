@@ -43,7 +43,6 @@ app.factory('socketIO', function ($rootScope) {
 });
 // end of Socket.IO service for AngularJS
 
-
 /**
  * Our angular routes
  */
@@ -77,6 +76,9 @@ app.config(['$routeProvider', function ($routeProvider) {
 	}).when('/docent/vraag-resulaten/:collectieId/:vraagId', {
 		templateUrl: 'templates/docent/vraag-resulaten.html',
 		controller: 'docentVraagResultatenCtrl'
+	}).when('/docent/ranglijst', {
+		templateUrl: 'templates/docent/ranglijst.html',
+		controller: 'docentRanglijstCtrl'
 	}).when('/link', {
 		templateUrl: 'templates/docent/link.html'
 	}).otherwise({
@@ -91,7 +93,7 @@ app.factory('VarService', function () {
 	return {
 		collecties: null,
 		vragen: null,
-		rangLijst: null,
+		rangLijst: null
 	};
 });
 
@@ -493,50 +495,6 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
 });
 
 /**
- * Docent vraag controller
- */
-app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, VarService, $location) {
-	$scope.collectieId = $routeParams.collectieId;
-	$scope.vraagId = $routeParams.vraagId;
-	$scope.antwoorden = VarService.collecties[$scope.collectieId - 1].vragen[$scope.vraagId - 1].antwoorden;
-	$scope.vraag = VarService.collecties[$scope.collectieId - 1].vragen[$scope.vraagId - 1].vraag;
-	$scope.processTime = 10; // In seconds
-	$scope.processBar = 100;
-	$scope.nextButton = false;
-
-	if ($scope.vraagId == VarService.collecties[$scope.collectieId - 1].vragen.length) {
-		$scope.nextButtonText = 'Bekijk resulaten';
-	} else {
-		$scope.nextButtonText = 'Volgende vraag';
-	}
-
-	$scope.nextQuestion = function () {
-		if ($scope.vraagId == VarService.collecties[$scope.collectieId - 1].vragen.length) {
-			console.log('einde');
-			$location.path('/docent/vraag-resulaten/' + $scope.collectieId + '/1');
-		} else {
-			$scope.vraagId++;
-			$location.path('/docent/vraag/' + $scope.collectieId + '/' + $scope.vraagId);
-		}
-	};
-
-	// Private functions
-	var updateBar = function () {
-		$scope.$apply(function () {
-			if ($scope.processTime >= 0) {
-				var tmp_var = ($scope.processTime * 1000) / 100;
-				$scope.processBar = tmp_var;
-				$scope.processTime -= 0.1;
-			} else {
-				$scope.nextButton = true;
-			}
-		});
-	};
-
-	setInterval(updateBar, 100);
-});
-
-/**
  * Docent vraag resultaten controller
  */
 app.controller('docentVraagResultatenCtrl', function ($rootScope, $scope, $routeParams, VarService, $location) {
@@ -554,11 +512,21 @@ app.controller('docentVraagResultatenCtrl', function ($rootScope, $scope, $route
 
 	$scope.nextQuestion = function () {
 		if ($scope.vraagId == VarService.collecties[$scope.collectieId - 1].vragen.length) {
+			console.log('test');
 			$location.path('/docent/ranglijst');
 		} else {
 			$scope.vraagId++;
 			$location.path('/docent/vraag-resulaten/' + $scope.collectieId + '/' + $scope.vraagId);
 		}
 	};
+
+});
+
+/**
+ * Docent ranglijst controller
+ */
+app.controller('docentRanglijstCtrl', function ($rootScope, $scope, $routeParams, VarService, $location) {
+
+	$scope.rangLijst = VarService.deelnemers;
 
 });
