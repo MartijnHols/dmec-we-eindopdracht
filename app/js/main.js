@@ -17,6 +17,7 @@ app.factory('socketIO', function ($rootScope) {
 	});
 	return {
 		on: function (eventName, callback) {
+			console.log(eventName);
 			socket.on(eventName, function () {
 				var args = arguments;
 				$rootScope.$apply(function () {
@@ -91,7 +92,6 @@ app.factory('VarService', function () {
 		collecties: null,
 		vragen: null,
 		rangLijst: null,
-		deelnemers: null
 	};
 });
 
@@ -143,18 +143,6 @@ app.controller('initCtrl', function ($scope, VarService) {
 		{positie: 6, naam: 'Martijn', score: '4/8'},
 		{positie: 7, naam: 'Dwayne', score: '0/8'},
 		{positie: 8, naam: 'Martijn', score: '0/8'}
-	];
-
-	VarService.deelnemers = [
-		{id: 1, naam: 'Dwayne'},
-		{id: 2, naam: 'Martijn'},
-		{id: 3, naam: 'Dwayne'},
-		{id: 4, naam: 'Dwayne'},
-		{id: 5, naam: 'Martijn'},
-		{id: 6, naam: 'Dwayne'},
-		{id: 7, naam: 'Dwayne'},
-		{id: 8, naam: 'Martijn'},
-		{id: 9, naam: 'Dwayne'}
 	];
 
 	VarService.collecties = [
@@ -453,8 +441,11 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
 /**
  * Deelnemers controller
  */
-app.controller('deelnemersCtrl', function ($rootScope, $scope, VarService) {
-	$scope.deelnemers = VarService.deelnemers;
+app.controller('deelnemersCtrl', function ($rootScope, $scope, VarService, socketIO) {
+	socketIO.emit('get-deelnemers');
+	socketIO.on('deelnemers-update', function (deelnemers) {
+		$scope.deelnemers = deelnemers;
+	});
 });
 
 /**

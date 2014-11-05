@@ -399,12 +399,31 @@ io.on("connection", function (socket) {
 		// Register player in our quiz
 		quiz.addPlayer(player);
 		// Let quiz master know
-		quiz.quizMaster.socket.emit('player-joined', player.naam);
+//		quiz.quizMaster.socket.emit('player-joined', player.naam);
+		quiz.quizMaster.socket.emit('deelnemers-update', deelnemersUpdate());
 
 		socket.emit('player-sign-in-success');
 	});
+	//TODO: player-disconnect
 	socket.on('player-send-answer', function (options, fn) {
 		playerController.addAntwoord(socket, options.vraagId, options.antwoord);
+	});
+
+	function deelnemersUpdate() {
+		console.log('deelnemersUpdate');
+		if (!quizMasterController.isLoggedIn(socket)) return fn({message:'Niet ingelogd.'});
+
+		var quizMaster = quizMasterController.get(socket);
+		var names = [];
+		for (var socketId in quizMaster.activeQuiz.players) {
+			var item = quizMaster.activeQuiz.players[socketId];
+			names.push({ naam: item.naam });
+		}
+		return names;
+	}
+
+	socket.on('get-deelnemers', function () {
+		socket.emit('deelnemers-update', deelnemersUpdate());
 	});
 });
 
