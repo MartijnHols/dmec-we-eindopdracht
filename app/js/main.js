@@ -332,13 +332,13 @@ app.controller('studentRanglijstCtrl', function ($rootScope, $scope, VarService)
  */
 app.controller('collectiesCtrl', function ($rootScope, $scope, socketIO, VarService) {
 
-    socketIO.emit('getCollections', null, function (error) {
+    socketIO.emit('get-collections', null, function (error) {
         if (error) {
             throw new Error(error.message);
         }
     });
 
-    socketIO.on('collectionUpdate', function (receivedCollecties) {
+    socketIO.on('collections-update', function (receivedCollecties) {
         $scope.collecties = receivedCollecties;
         VarService.collecties = receivedCollecties;
     });
