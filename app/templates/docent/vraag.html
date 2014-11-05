@@ -11,7 +11,7 @@
     </div>
     <div class="col-md-3">
         <div class="form-group pull-right">
-            <button ng-class="nextButton ? 'btn btn-success' : 'btn btn-success disabled'">Volgende vraag <i
+            <button ng-click="nextQuestion()" ng-class="nextButton ? 'btn btn-success' : 'btn btn-success disabled'">{{nextButtonText}} <i
                     class="fa fa-reply fa-flip-horizontal"></i></button>
         </div>
     </div>
