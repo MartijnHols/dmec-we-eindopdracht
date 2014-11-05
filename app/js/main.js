@@ -91,20 +91,20 @@ app.factory('VarService', function () {
 });
 
 app.controller('docentLoginCtrl', function ($scope, $location, socketIO) {
-	$scope.loginDocent = function () {
-		socketIO.emit("sign in", {
-			username: $scope.username,
-			password: $scope.password
-		});
-	};
-	socketIO.on("sign in success", function (username) {
-		$scope.naam = username;
-		$location.path('/docent/collecties');
-	});
-	socketIO.on("sign in error", function () {
-		alert('Helaas. :( De opgevoerde gebruikersnaam en wachtwoord zijn niet correct.');
-		$scope.password = '';
-	});
+    $scope.loginDocent = function () {
+        socketIO.emit("sign in", {
+            username: $scope.username,
+            password: $scope.password
+        });
+    };
+    socketIO.on("sign in success", function (username) {
+        $scope.naam = username;
+        $location.path('/docent/collecties');
+    });
+    socketIO.on("sign in error", function () {
+        alert('Helaas. :( De opgevoerde gebruikersnaam en wachtwoord zijn niet correct.');
+        $scope.password = '';
+    });
 });
 
 /**
@@ -164,15 +164,15 @@ app.controller('studentRanglijstCtrl', function ($rootScope, $scope, VarService)
  * Collecties controller
  */
 app.controller('collectiesCtrl', function ($rootScope, $scope, socketIO, VarService) {
-	socketIO.emit('getCollections', null, function (error) {
-		if (error) {
-			throw new Error(error.message);
-		}
-	});
-	socketIO.on('collectionUpdate', function (receivedCollecties) {
-		$scope.collecties = receivedCollecties;
-		VarService.collecties = receivedCollecties;
-	});
+    socketIO.emit('getCollections', null, function (error) {
+        if (error) {
+            throw new Error(error.message);
+        }
+    });
+    socketIO.on('collectionUpdate', function (receivedCollecties) {
+        $scope.collecties = receivedCollecties;
+        VarService.collecties = receivedCollecties;
+    });
 });
 
 /**
@@ -182,6 +182,7 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
 
     $scope.id = $routeParams.id;
     $scope.newQuestion = false;
+    $scope.newAnswer = false;
 
     /**
      * Hier moet een url genereert worden
@@ -190,6 +191,7 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
     $scope.popUpUrl = '#/student';
 
     $scope.vragen = VarService.collecties[$routeParams.id - 1].vragen;
+    $scope.antwoorden = false;
 
     $scope.addQuestion = function (collectie_id, newQuestionInput) {
         $scope.newQuestion = false;
@@ -199,9 +201,9 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
                 vraag: newQuestionInput,
                 visible: true,
                 antwoorden: [
-                    {id: 0, antwoord: 'Antwoord 1', waar: true},
-                    {id: 1, antwoord: 'Antwoord 2', waar: false},
-                    {id: 2, antwoord: 'Antwoord 3', waar: false}
+                    {id: 0, antwoord: 'Antwoord 1', score: 0},
+                    {id: 1, antwoord: 'Antwoord 2', score: 5},
+                    {id: 2, antwoord: 'Antwoord 3', score: 10}
                 ]
             });
         }
@@ -222,11 +224,38 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
     };
 
     $scope.changeVisbility = function (index) {
-        if(VarService.collecties[$routeParams.id - 1].vragen[index].visible){
+        if (VarService.collecties[$routeParams.id - 1].vragen[index].visible) {
             VarService.collecties[$routeParams.id - 1].vragen[index].visible = false;
         } else {
             VarService.collecties[$routeParams.id - 1].vragen[index].visible = true;
         }
+    };
+
+    $scope.toggleAddAnswer = function (questionIndex) {
+        if ($scope.newAnswer) {
+            $scope.newAnswer = false;
+            $scope.antwoorden = false;
+            $scope.vraagTitle = false;
+        } else {
+            $scope.vraagTitle = VarService.collecties[$routeParams.id - 1].vragen[questionIndex].vraag;
+            $scope.antwoorden = VarService.collecties[$routeParams.id - 1].vragen[questionIndex].antwoorden;
+            $scope.newAnswer = true;
+        }
+    };
+
+    $scope.addAnswer = function (newAnswerInput, scoreInput) {
+        if (newAnswerInput.length > 0) {
+            $scope.antwoorden.push(
+                {id: 0, antwoord: newAnswerInput, score: scoreInput}
+            );
+
+            $scope.newAnswerInput = '';
+            $scope.scoreInput = '';
+        }
+    };
+
+    $scope.deleteAnswer = function (index) {
+        $scope.antwoorden.splice(index, 1);
     };
 
     // Private function
@@ -269,62 +298,3 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
     $scope.vragen = VarService.vragen;
 
 });
-
-//app.controller("nameFormController", function ($scope, $location) {
-//
-//	$scope.userName = "";
-//
-//	$scope.submitUserName = function () {
-//		$location.path("/blocks/" + $scope.userName);
-//	}
-//
-//});
-//
-//app.controller("blocksController", function ($scope, $routeParams, socketIO) {
-//	socketIO.emit("sign in", $routeParams.name);
-//
-//	socketIO.on("sign in reply", function (players) {
-//		console.log("SIGNINREPLY:", players);
-//		$scope.playerSet = players;
-//		$scope.player = $scope.playerSet[ socketIO.id() ]; // We're storing the player in an object
-//		// indexed by socket-id (see server code).
-//		// We no longer have to rely on the current
-//		// player being the last player in the array.
-//	});
-//	socketIO.on("new player", function (newPlayerInfo) {
-//		$scope.playerSet[newPlayerInfo.socketId] = newPlayerInfo;
-//	});
-//	socketIO.on("update other player", function (playerInfo) {
-//		$scope.playerSet[playerInfo.socketId] = playerInfo;
-//	});
-//	socketIO.on("player has left", function (id) {
-//		delete $scope.playerSet[id];
-//	});
-//
-//	// This is no longer an array. We'll use a JS object where the keys
-//	// are socket ids, and the values are player-objects.
-//	// Therefore the name is changed from "playerList" to "playerSet".
-//	$scope.playerSet = null;
-//	$scope.player = null;
-//
-//	$scope.key = function (evt) {
-//		console.log("KEY:", evt.keyCode);
-//
-//		var step = 15;
-//
-//		if (evt.keyCode == 37) { //LEFT
-//			$scope.player.x -= step;
-//			evt.preventDefault();
-//		} else if (evt.keyCode == 38) { //UP
-//			$scope.player.y -= step;
-//			evt.preventDefault();
-//		} else if (evt.keyCode == 39) { //RIGHT
-//			$scope.player.x += step;
-//			evt.preventDefault();
-//		} else if (evt.keyCode == 40) { //DOWN
-//			$scope.player.y += step;
-//			evt.preventDefault();
-//		}
-//		socketIO.emit("update player", $scope.player);
-//	}
-//});
