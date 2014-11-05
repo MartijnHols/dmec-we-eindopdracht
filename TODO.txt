@@ -1,3 +1,6 @@
 # Martijn
 
 # Dwayne
+- Foutmelding bij foutief inlog
+- Popup scherm bijwerken
+- Resultaten vragen iteratie maken
