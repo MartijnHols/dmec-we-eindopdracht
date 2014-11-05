@@ -93,16 +93,16 @@ app.factory('VarService', function () {
 
 app.controller('docentLoginCtrl', function ($scope, $location, socketIO) {
 	$scope.loginDocent = function () {
-		socketIO.emit("sign in", {
+		socketIO.emit("account-sign-in", {
 			username: $scope.username,
 			password: $scope.password
 		});
 	};
-	socketIO.on("sign in success", function (username) {
+	socketIO.on("account-sign-in-success", function (username) {
 		$scope.naam = username;
 		$location.path('/docent/collecties');
 	});
-	socketIO.on("sign in error", function () {
+	socketIO.on("account-sign-in-error", function () {
 		alert('Helaas. :( De opgevoerde gebruikersnaam en wachtwoord zijn niet correct.');
 		$scope.password = '';
 	});
