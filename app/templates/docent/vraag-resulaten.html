@@ -1,0 +1,47 @@
+<div class="row">
+    <div class="col-md-12">
+        <h1>Vraag <span class="label label-primary">{{ vraagId }}</span></h1>
+        <hr/>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-9">
+        <h4>{{vraag}}</h4>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group pull-right">
+            <button ng-click="nextQuestion()" class="btn btn-success">{{nextButtonText}} <i
+                    class="fa fa-reply fa-flip-horizontal"></i></button>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <hr/>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div ng-repeat="antwoord in antwoorden" class="panel panel-default">
+            <div class="panel-heading">{{antwoord.antwoord}} <span class="label label-default pull-right">{{antwoord.score}}</span></div>
+            <div class="panel-body">
+                <span class="label label-primary">Dwayne</span>
+                <span class="label label-primary">Dwayne</span>
+                <span class="label label-primary">Dwayne</span>
+                <span class="label label-primary">Dwayne</span>
+            </div>
+        </div>
+        <div class="panel panel-danger">
+            <div class="panel-heading">Niet beantwoord</div>
+            <div class="panel-body">
+                <span class="label label-primary">Dwayne</span>
+                <span class="label label-primary">Dwayne</span>
+                <span class="label label-primary">Dwayne</span>
+                <span class="label label-primary">Dwayne</span>
+            </div>
+        </div>
+    </div>
+</div>
