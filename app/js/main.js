@@ -73,6 +73,9 @@ app.config(['$routeProvider', function ($routeProvider) {
     }).when('/docent/vraag/:collectieId/:vraagId', {
         templateUrl: 'templates/docent/vraag.html',
         controller: 'docentVraagCtrl'
+    }).when('/docent/vraag-resulaten/:collectieId/:vraagId', {
+        templateUrl: 'templates/docent/vraag-resulaten.html',
+        controller: 'docentVraagResultatenCtrl'
     }).when('/link', {
         templateUrl: 'templates/docent/link.html'
     }).otherwise({
@@ -543,4 +546,31 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
     };
 
     setInterval(updateBar, 100);
+});
+
+/**
+ * Docent vraag resultaten controller
+ */
+app.controller('docentVraagResultatenCtrl', function ($rootScope, $scope, $routeParams, VarService, $location) {
+
+    $scope.collectieId = $routeParams.collectieId;
+    $scope.vraagId = $routeParams.vraagId;
+    $scope.antwoorden = VarService.collecties[$scope.collectieId - 1].vragen[$scope.vraagId - 1].antwoorden;
+    $scope.vraag = VarService.collecties[$scope.collectieId - 1].vragen[$scope.vraagId - 1].vraag;
+
+    if($scope.vraagId == VarService.collecties[$scope.collectieId - 1].vragen.length){
+        $scope.nextButtonText = 'Bekijk resulaten';
+    } else {
+        $scope.nextButtonText = 'Volgende vraag';
+    }
+
+    $scope.nextQuestion = function(){
+        if($scope.vraagId == VarService.collecties[$scope.collectieId - 1].vragen.length){
+            $location.path('/docent/ranglijst');
+        } else {
+            $scope.vraagId++
+            $location.path('/docent/vraag-resulaten/' + $scope.collectieId + '/' + $scope.vraagId);
+        }
+    };
+
 });
