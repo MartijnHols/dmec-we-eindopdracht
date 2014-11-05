@@ -49,7 +49,7 @@ app.factory('socketIO', function ($rootScope) {
 app.config(['$routeProvider', function ($routeProvider) {
     $routeProvider.when('/', {
         templateUrl: 'templates/student/aanmelden.html',
-	    controller: 'studentLoginCtrl'
+        controller: 'studentLoginCtrl'
     }).when('/wachten', {
         templateUrl: 'templates/student/wachten.html'
     }).when('/vraag/:vraagNummer', {
@@ -96,37 +96,37 @@ app.factory('VarService', function () {
 });
 
 app.controller('docentLoginCtrl', function ($scope, $location, socketIO) {
-	$scope.loginDocent = function () {
-		socketIO.emit("account-sign-in", {
-			username: $scope.username,
-			password: $scope.password
-		});
-	};
-	socketIO.on("account-sign-in-success", function (username) {
-		$scope.naam = username;
-		$location.path('/docent/collecties');
-	});
-	socketIO.on("account-sign-in-error", function () {
-		alert('Helaas. :( De opgevoerde gebruikersnaam en wachtwoord zijn niet correct.');
-		$scope.password = '';
-	});
+    $scope.loginDocent = function () {
+        socketIO.emit("account-sign-in", {
+            username: $scope.username,
+            password: $scope.password
+        });
+    };
+    socketIO.on("account-sign-in-success", function (username) {
+        $scope.naam = username;
+        $location.path('/docent/collecties');
+    });
+    socketIO.on("account-sign-in-error", function () {
+        alert('Helaas. :( De opgevoerde gebruikersnaam en wachtwoord zijn niet correct.');
+        $scope.password = '';
+    });
 });
 
 app.controller('studentLoginCtrl', function ($scope, $location, socketIO) {
-	$scope.loginStudent = function () {
-		socketIO.emit('player-sign-in', {
-			username: $scope.naam,
-			quizId: $scope.token
-		}, function (error) {
-			if (error) {
-				alert(error.message);
-			}
-		});
-	};
-	socketIO.on('player-sign-in-success', function (username) {
-		$scope.naam = username;
-		$location.path('/wachten');
-	});
+    $scope.loginStudent = function () {
+        socketIO.emit('player-sign-in', {
+            username: $scope.naam,
+            quizId: $scope.token
+        }, function (error) {
+            if (error) {
+                alert(error.message);
+            }
+        });
+    };
+    socketIO.on('player-sign-in-success', function (username) {
+        $scope.naam = username;
+        $location.path('/wachten');
+    });
 });
 
 /**
@@ -472,14 +472,14 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
     $scope.processBar = 100;
     $scope.nextButton = false;
 
-    if($scope.vraagId == VarService.collecties[$scope.collectieId - 1].vragen.length){
-       $scope.nextButtonText = 'Bekijk resulaten';
+    if ($scope.vraagId == VarService.collecties[$scope.collectieId - 1].vragen.length) {
+        $scope.nextButtonText = 'Bekijk resulaten';
     } else {
         $scope.nextButtonText = 'Volgende vraag';
     }
 
-    $scope.nextQuestion = function(){
-        if($scope.vraagId == VarService.collecties[$scope.collectieId - 1].vragen.length){
+    $scope.nextQuestion = function () {
+        if ($scope.vraagId == VarService.collecties[$scope.collectieId - 1].vragen.length) {
             console.log('einde');
             $location.path('/docent/vraag-resulaten/' + $scope.collectieId + '/1');
         } else {
@@ -491,7 +491,7 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
     // Private functions
     var updateBar = function () {
         $scope.$apply(function () {
-            if ($scope.processTime >= 0){
+            if ($scope.processTime >= 0) {
                 var tmp_var = ($scope.processTime * 1000) / 100;
                 $scope.processBar = tmp_var;
                 $scope.processTime -= 0.1;
@@ -516,14 +516,14 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
     $scope.processBar = 100;
     $scope.nextButton = false;
 
-    if($scope.vraagId == VarService.collecties[$scope.collectieId - 1].vragen.length){
+    if ($scope.vraagId == VarService.collecties[$scope.collectieId - 1].vragen.length) {
         $scope.nextButtonText = 'Bekijk resulaten';
     } else {
         $scope.nextButtonText = 'Volgende vraag';
     }
 
-    $scope.nextQuestion = function(){
-        if($scope.vraagId == VarService.collecties[$scope.collectieId - 1].vragen.length){
+    $scope.nextQuestion = function () {
+        if ($scope.vraagId == VarService.collecties[$scope.collectieId - 1].vragen.length) {
             console.log('einde');
             $location.path('/docent/vraag-resulaten/' + $scope.collectieId + '/1');
         } else {
@@ -535,7 +535,7 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
     // Private functions
     var updateBar = function () {
         $scope.$apply(function () {
-            if ($scope.processTime >= 0){
+            if ($scope.processTime >= 0) {
                 var tmp_var = ($scope.processTime * 1000) / 100;
                 $scope.processBar = tmp_var;
                 $scope.processTime -= 0.1;
@@ -558,14 +558,14 @@ app.controller('docentVraagResultatenCtrl', function ($rootScope, $scope, $route
     $scope.antwoorden = VarService.collecties[$scope.collectieId - 1].vragen[$scope.vraagId - 1].antwoorden;
     $scope.vraag = VarService.collecties[$scope.collectieId - 1].vragen[$scope.vraagId - 1].vraag;
 
-    if($scope.vraagId == VarService.collecties[$scope.collectieId - 1].vragen.length){
+    if ($scope.vraagId == VarService.collecties[$scope.collectieId - 1].vragen.length) {
         $scope.nextButtonText = 'Bekijk resulaten';
     } else {
         $scope.nextButtonText = 'Volgende vraag';
     }
 
-    $scope.nextQuestion = function(){
-        if($scope.vraagId == VarService.collecties[$scope.collectieId - 1].vragen.length){
+    $scope.nextQuestion = function () {
+        if ($scope.vraagId == VarService.collecties[$scope.collectieId - 1].vragen.length) {
             $location.path('/docent/ranglijst');
         } else {
             $scope.vraagId++
