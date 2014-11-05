@@ -25,6 +25,7 @@ app.factory('socketIO', function ($rootScope) {
             });
         },
         emit: function (eventName, data, callback) {
+	        console.log(eventName, data);
             socket.emit(eventName, data, function () {
                 var args = arguments;
                 $rootScope.$apply(function () {
@@ -348,7 +349,7 @@ app.controller('collectiesCtrl', function ($rootScope, $scope, socketIO, VarServ
 /**
  * Collecties controller
  */
-app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarService, $window) {
+app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarService, $window, socketIO) {
     $scope.id = $routeParams.id;
     $scope.newQuestion = false;
     $scope.newAnswer = false;
@@ -389,7 +390,8 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
     };
 
     $scope.openStudentLink = function () {
-        $window.open('#/student/link');
+        $window.open('#/link');
+	    socketIO.emit('open-quiz');
     };
 
     $scope.changeVisbility = function (index) {
@@ -452,24 +454,13 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
  * Deelnemers controller
  */
 app.controller('deelnemersCtrl', function ($rootScope, $scope, VarService) {
-
     $scope.deelnemers = VarService.deelnemers;
-
-//    setInterval(function () {
-//        console.log('First name being reset');
-//        $scope.$apply(function () {
-//                VarService.deelnemers.push({id: 10, naam: 'tyuio'});
-//            }
-//        )
-//    }, 1000);
-
 });
 
 /**
  * Docent vraag controller
  */
 app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, VarService, $location) {
-
     $scope.collectieId = $routeParams.collectieId;
     $scope.vraagId = $routeParams.vraagId;
     $scope.antwoorden = VarService.collecties[$scope.collectieId - 1].vragen[$scope.vraagId - 1].antwoorden;
@@ -514,7 +505,6 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
  * Docent vraag controller
  */
 app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, VarService, $location) {
-
     $scope.collectieId = $routeParams.collectieId;
     $scope.vraagId = $routeParams.vraagId;
     $scope.antwoorden = VarService.collecties[$scope.collectieId - 1].vragen[$scope.vraagId - 1].antwoorden;
@@ -554,6 +544,3 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
 
     setInterval(updateBar, 100);
 });
-
-
-

@@ -28,11 +28,11 @@ function QuizMaster(socket, name) {
  * @param vragen object[]
  * @constructor
  */
-function Quiz(id, quizMaster, vragen) {
+function Quiz(id, quizMaster) {
 	this.id = id;
 	this.quizMaster = quizMaster;
 	quizMaster.activeQuiz = this;
-	this.vragen = vragen;
+	this.vragen = null;
 	this.players = {};
 	this.started = false;
 
@@ -129,10 +129,10 @@ var quizMasterController = {
 };
 var quizController = {
 	quizesActief: {},
-	openQuiz: function (eigenaar, vragen) {
+	openQuiz: function (eigenaar) {
 		var quizId = this.getRandomToken();
 
-		this.quizesActief[quizId] = new Quiz(quizId, eigenaar, vragen);
+		this.quizesActief[quizId] = new Quiz(quizId, eigenaar);
 
 		return quizId;
 	},
@@ -367,19 +367,21 @@ io.on("connection", function (socket) {
 		socket.emit('collections-update', collecties);
 	});
 
-	socket.on('open-quiz', function (vragen, fn) {
+	socket.on('open-quiz', function (name, fn) {
+		console.log('open-quiz');
 		if (!quizMasterController.isLoggedIn(socket)) return fn({message:'Niet ingelogd.'});
 
 		var quizMaster = quizMasterController.get(socket);
-		quizController.openQuiz(quizMaster, vragen);1
+		quizController.openQuiz(quizMaster);
 	});
-	socket.on('start-quiz', function (quizId, fn) {
+	socket.on('start-quiz', function (options, fn) {
 		if (!quizMasterController.isLoggedIn(socket)) return fn({message:'Niet ingelogd.'});
 
-		var quiz = quizController.get(quizId);
+		var quiz = quizController.get(options.quizId);
 		if (quiz.quizMaster != quizMasterController.get(socket)) {
 			return fn({message:'U bent niet quizmaster van deze quiz.'});
 		}
+		quiz.vragen = options.vragen;
 		quiz.start();
 	});
 	
