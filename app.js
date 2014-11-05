@@ -9,9 +9,98 @@ var io = socketio(httpServer);
 
 app.use('/', express.static(path.join(__dirname, 'app')));
 
+/**
+ *
+ * @param socket
+ * @param name
+ * @constructor
+ */
+function QuizMaster(socket, name) {
+	// Bewaar een referentie naar de socket van een docent zodat we hem specifiek berichten kunnen blijven sturen
+	this.socket = socket;
+	this.name = name;
+	this.activeQuiz = null;
+}
+/**
+ *
+ * @param id string
+ * @param quizMaster QuizMaster
+ * @param vragen object[]
+ * @constructor
+ */
+function Quiz(id, quizMaster, vragen) {
+	this.id = id;
+	this.quizMaster = quizMaster;
+	quizMaster.activeQuiz = this;
+	this.vragen = vragen;
+	this.players = {};
+	this.started = false;
+
+	/**
+	 * Add a new player to this quiz.
+	 * @param socket
+	 * @param player
+	 */
+	this.addPlayer = function (player) {
+		if (this.started) {
+			throw new Error('De quiz is al gestart: aanmelden is niet meer mogelijk.');
+		}
+		this.players[player.socket.id] = player;
+	};
+	/**
+	 * Remove the provided player from this quiz.
+	 * @param socketId
+	 */
+	this.removePlayer = function (socket) {
+		delete this.players[socket.id];
+		this.quizMaster.socket.emit('player-left', socket.id);
+	};
+	this.hasPlayer = function (socket) {
+		return this.players[socket.id] !== undefined;
+	};
+	this.getPlayer = function (socket) {
+		return this.players[socket.id];
+	};
+	this.start = function () {
+		this.started = true;
+		for (var socketId in this.players) {
+			var player = this.players[socketId];
+			player.socket.emit('quiz-start', vragen[0]);
+		}
+		this.quizMaster.socket.emit('quiz-start', vragen[0]);
+	};
+	/**
+	 * End the quiz, removing all players.
+	 */
+	this.end = function () {
+		var players = this.players;
+		for (var socketId in players) {
+			this.removePlayer(socketId);
+		}
+		this.quizMaster.socket.emit('quiz-end', this.id);
+	};
+}
+function Player(socket, naam, quiz) {
+	this.socket = socket;
+	this.naam = naam;
+	this.quiz = quiz;
+	this.antwoorden = {};
+
+	this.addAntwoord = function (vraagId, antwoord) {
+		this.antwoorden[vraagId] = antwoord;
+	};
+	this.getScore = function () {
+		var score = 0;
+		for (var vraagId in this.antwoorden) {
+			score += this.antwoorden[vraagId].score;
+		}
+		return score;
+	};
+}
+
 var accountController = {
 	accounts: [
-		{ username: 'admin', name: 'Administrator', password: 'admin'}
+		{ username: 'admin', password: 'admin', name: 'Administrator' }
 	],
 	findAccount: function (username, password) {
 		for (var i = 0, len = this.accounts.length; i < len; i++) {
@@ -21,16 +110,76 @@ var accountController = {
 			}
 		}
 		return null;
+	}
+};
+var quizMasterController = {
+	quizMastersOnline: {},
+	login: function (socket, account) {
+		this.quizMastersOnline[socket.id] = new QuizMaster(socket, account.name);
 	},
-	accountsOnline: [],
-	login: function (socketId, account) {
-		this.accountsOnline[socketId] = account;
+	logout: function (socket) {
+		delete this.quizMastersOnline[socket.id];
 	},
-	logout: function (socketId) {
-		delete this.accountsOnline[socketId];
+	isLoggedIn: function (socket) {
+		return (this.quizMastersOnline[socket.id] !== undefined);
 	},
-	isLoggedIn: function (socketId) {
-		return (this.accountsOnline[socketId] !== undefined);
+	get: function (socket) {
+		return this.quizMastersOnline[socket.id];
+	}
+};
+var quizController = {
+	quizesActief: {},
+	openQuiz: function (eigenaar, vragen) {
+		var quizId = this.getRandomToken();
+
+		this.quizesActief[quizId] = new Quiz(quizId, eigenaar, vragen);
+
+		return quizId;
+	},
+	stopQuiz: function (quizId) {
+		var quiz = this.quizesActief[quizId];
+		quiz.end();
+		delete this.quizesActief[quizId];
+	},
+	get: function (quizId) {
+		return this.quizesActief[quizId];
+	},
+	logout: function (socket) {
+		for (var i = 0, len = this.quizesActief.length; i < len; i++) {
+			var quiz = this.quizesActief[i];
+			quiz.removePlayer(socket.id);
+			if (quiz.quizMaster.socket.id == socket.id) {
+				this.stopQuiz(quiz.id);
+			}
+		}
+	},
+	getRandomToken: function () {
+		var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghiklmnopqrstuvwxyz";
+		var string_length = 6;
+		var token = '';
+		for (var i = 0; i < string_length; i++) {
+			var charNo = Math.floor(Math.random() * chars.length);
+			token += chars.substring(charNo, charNo + 1);
+		}
+		return token;
+	}
+};
+var playerController = {
+	players: {},
+	addPlayer: function (socket, naam, quiz) {
+		var player = new Player(socket, naam, quiz);
+		this.players[socket.id] = player;
+	},
+	removePlayer: function (socket) {
+		var player = this.players[socket.id];
+		if (player.quiz) {
+			player.quiz.removePlayer(socket);
+		}
+		delete this.players[socket.id];
+	},
+	addAntwoord: function (socket, vraagId, antwoord) {
+		var player = this.players[socket.id];
+		player.quiz.addAntwoord(socket, vraagId, antwoord);
 	}
 };
 
@@ -182,8 +331,6 @@ var collecties = [
 	}
 ];
 
-//var players = {};  // Using an object istead of an array is
-
 io.on("connection", function (socket) {
 	console.log("CONNECT:", socket.id);
 
@@ -194,39 +341,65 @@ io.on("connection", function (socket) {
 		//		socket.broadcast.emit("player has left", socket.id)  // the socket id is enough for
 		//		// all others to remove the player.
 		//		delete players[socket.id]  // this removes the player from the object.
-		accountController.logout(socket.id);
+		quizController.logout(socket.id);
 	});
 
-	socket.on("sign in", function (accountInfo) {
+	socket.on("account-sign-in", function (accountInfo) {
 		console.log('Login attempt for: ' + accountInfo.username + ' (' + accountInfo.password + ')');
 
 		var account = accountController.findAccount(accountInfo.username, accountInfo.password);
 		if (account) {
 			console.log('Identified ' + accountInfo.username + ' as ' + account.name);
-			accountController.login(socket.id, account);
-			socket.emit('sign in success', account.name);
+
+			quizMasterController.login(socket, account);
+
+			socket.emit('account-sign-in-success', account.name);
 			return;
 		}
 		console.log('No such user found');
-		socket.emit('sign in error');
+		socket.emit('account-sign-in-error');
 	});
 
-	socket.on("getCollections", function (name, fn) {
-        /**
-         * TODO: Tijdelijk uitgezet voor Dwayne
-         */
-//		if (!accountController.isLoggedIn(socket.id)) return fn({message:'Niet ingelogd.'});
+	socket.on("get-collections", function (name, fn) {
+		if (!quizMasterController.isLoggedIn(socket)) return fn({message:'Niet ingelogd.'});
 
 		console.log(socket.id + ': getCollections');
-		socket.emit('collectionUpdate', collecties);
+		socket.emit('collections-update', collecties);
 	});
 
-	//	socket.on("update player", function (playerInfo) {
-	//		socket.broadcast.emit("update other player", playerInfo);
-	//
-	//		players[playerInfo.socketId] = playerInfo;
-	//	});
+	socket.on('open-quiz', function (vragen, fn) {
+		if (!quizMasterController.isLoggedIn(socket)) return fn({message:'Niet ingelogd.'});
 
+		var quizMaster = quizMasterController.get(socket);
+		quizController.openQuiz(quizMaster, vragen);1
+	});
+	socket.on('start-quiz', function (quizId, fn) {
+		if (!quizMasterController.isLoggedIn(socket)) return fn({message:'Niet ingelogd.'});
+
+		var quiz = quizController.get(quizId);
+		if (quiz.quizMaster != quizMasterController.get(socket)) {
+			return fn({message:'U bent niet quizmaster van deze quiz.'});
+		}
+		quiz.start();
+	});
+	
+	socket.on('player-sign-in', function (options, fn) {
+		var quiz = quizController.get(options.quizId);
+		if (!quiz) {
+			return fn({message:'Deze quiz bestaat niet.'});
+		}
+		// Create player object
+		var player = playerController.addPlayer(socket, options.name, quiz);
+		// Register player in our quiz
+		quiz.addPlayer(player);
+		// Let quiz master know
+		quiz.quizMaster.socket.emit('player-joined', player);
+
+		socket.emit('player-sign-in-success');
+	});
+	socket.on('player-send-answer', function (options, fn) {
+		playerController.addAntwoord(socket, options.vraagId, options.antwoord);
+	});
 });
 
 httpServer.listen(3000, function () {

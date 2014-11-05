@@ -47,7 +47,8 @@ app.factory('socketIO', function ($rootScope) {
  */
 app.config(['$routeProvider', function ($routeProvider) {
     $routeProvider.when('/', {
-        templateUrl: 'templates/student/aanmelden.html'
+        templateUrl: 'templates/student/aanmelden.html',
+	    controller: 'studentLoginCtrl'
     }).when('/wachten', {
         templateUrl: 'templates/student/wachten.html'
     }).when('/vraag/:vraagNummer', {
@@ -95,6 +96,23 @@ app.controller('docentLoginCtrl', function ($scope, $location, socketIO) {
 		socketIO.emit("sign in", {
 			username: $scope.username,
 			password: $scope.password
+		});
+	};
+	socketIO.on("sign in success", function (username) {
+		$scope.naam = username;
+		$location.path('/docent/collecties');
+	});
+	socketIO.on("sign in error", function () {
+		alert('Helaas. :( De opgevoerde gebruikersnaam en wachtwoord zijn niet correct.');
+		$scope.password = '';
+	});
+});
+
+app.controller('studentLoginCtrl', function ($scope, $location, socketIO) {
+	$scope.loginStudent = function () {
+		socketIO.emit("player-sign-in", {
+			username: $scope.username,
+			quizId: $scope.quizToken
 		});
 	};
 	socketIO.on("sign in success", function (username) {
@@ -179,7 +197,6 @@ app.controller('collectiesCtrl', function ($rootScope, $scope, socketIO, VarServ
  * Collecties controller
  */
 app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarService, $window) {
-
     $scope.id = $routeParams.id;
     $scope.newQuestion = false;
 
