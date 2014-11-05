@@ -1,3 +1,5 @@
+'use strict';
+
 var express = require('express');
 var path = require('path');
 var http = require('http');
@@ -169,6 +171,7 @@ var playerController = {
 	addPlayer: function (socket, naam, quiz) {
 		var player = new Player(socket, naam, quiz);
 		this.players[socket.id] = player;
+		return player;
 	},
 	removePlayer: function (socket) {
 		var player = this.players[socket.id];
@@ -372,7 +375,8 @@ io.on("connection", function (socket) {
 		if (!quizMasterController.isLoggedIn(socket)) return fn({message:'Niet ingelogd.'});
 
 		var quizMaster = quizMasterController.get(socket);
-		quizController.openQuiz(quizMaster);
+		var quizId = quizController.openQuiz(quizMaster);
+		console.log(quizId);
 	});
 	socket.on('start-quiz', function (options, fn) {
 		if (!quizMasterController.isLoggedIn(socket)) return fn({message:'Niet ingelogd.'});
@@ -391,11 +395,11 @@ io.on("connection", function (socket) {
 			return fn({message:'Deze quiz bestaat niet.'});
 		}
 		// Create player object
-		var player = playerController.addPlayer(socket, options.name, quiz);
+		var player = playerController.addPlayer(socket, options.naam, quiz);
 		// Register player in our quiz
 		quiz.addPlayer(player);
 		// Let quiz master know
-		quiz.quizMaster.socket.emit('player-joined', player);
+		quiz.quizMaster.socket.emit('player-joined', player.naam);
 
 		socket.emit('player-sign-in-success');
 	});

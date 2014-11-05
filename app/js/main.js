@@ -114,7 +114,7 @@ app.controller('docentLoginCtrl', function ($scope, $location, socketIO) {
 app.controller('studentLoginCtrl', function ($scope, $location, socketIO) {
 	$scope.loginStudent = function () {
 		socketIO.emit('player-sign-in', {
-			username: $scope.naam,
+			naam: $scope.naam,
 			quizId: $scope.token
 		}, function (error) {
 			if (error) {
