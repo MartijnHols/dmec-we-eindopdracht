@@ -39,8 +39,8 @@ app.factory('socketIO', function ($rootScope) {
         }
     };
 });
-
 // end of Socket.IO service for AngularJS
+
 
 /**
  * Our angular routes
@@ -69,7 +69,7 @@ app.config(['$routeProvider', function ($routeProvider) {
     }).when('/docent/deelnemers', {
         templateUrl: 'templates/docent/deelnemers.html',
         controller: 'deelnemersCtrl'
-    }).when('/docent/vraag/:vraagId/:collectieId', {
+    }).when('/docent/vraag/:collectieId/:vraagId', {
         templateUrl: 'templates/docent/vraag.html',
         controller: 'docentVraagCtrl'
     }).when('/link', {
@@ -153,6 +153,176 @@ app.controller('initCtrl', function ($scope, VarService) {
         {id: 9, naam: 'Dwayne'}
     ];
 
+    VarService.collecties = [
+        {
+            id: 1,
+            naam: 'AJAX',
+            vragen: [
+                {
+                    id: 1,
+                    vraag: 'Waar kan je AJAX voor gebruiken?',
+                    visible: true,
+                    antwoorden: [
+                        {id: 0, antwoord: 'Het asynchroon updaten van content.', score: 10},
+                        {id: 1, antwoord: 'Het asynchroon verzenden en ophalen van gegevens.', score: 10},
+                        {id: 2, antwoord: 'Het asynchroon wijzigen van de pagina.', score: 5},
+                        {id: 3, antwoord: 'Als protocol voor de verzending van data.', score: 0}
+                    ]
+                },
+                {
+                    id: 2,
+                    vraag: 'Waar zou AJAX handig voor zijn?',
+                    visible: false,
+                    antwoorden: [
+                        {id: 0, antwoord: 'Antwoord 1', score: 0},
+                        {id: 1, antwoord: 'Antwoord 2', score: 5},
+                        {id: 2, antwoord: 'Antwoord 3', score: 10}
+                    ]
+                },
+                {
+                    id: 3,
+                    vraag: 'Waar is AJAX niet goed voor?',
+                    visible: true,
+                    antwoorden: [
+                        {id: 0, antwoord: 'Antwoord 1', score: 0},
+                        {id: 1, antwoord: 'Antwoord 2', score: 5},
+                        {id: 2, antwoord: 'Antwoord 3', score: 10}
+                    ]
+                }
+            ]
+        },
+        {
+            id: 2,
+            naam: 'HTML 5',
+            vragen: [
+                {
+                    id: 4,
+                    vraag: 'Waar staat HTML 5 voor?',
+                    visible: true,
+                    antwoorden: [
+                        {id: 0, antwoord: 'Antwoord 1', score: 0},
+                        {id: 1, antwoord: 'Antwoord 2', score: 5},
+                        {id: 2, antwoord: 'Antwoord 3', score: 10}
+                    ]
+                },
+                {
+                    id: 5,
+                    vraag: 'Waar zou HTML 5 handig voor zijn?',
+                    visible: false,
+                    antwoorden: [
+                        {id: 0, antwoord: 'Antwoord 1', score: 0},
+                        {id: 1, antwoord: 'Antwoord 2', score: 5},
+                        {id: 2, antwoord: 'Antwoord 3', score: 10}
+                    ]
+                },
+                {
+                    id: 6,
+                    vraag: 'Waar is HTML 5 niet goed voor?',
+                    visible: true,
+                    antwoorden: [
+                        {id: 0, antwoord: 'Antwoord 1', score: 0},
+                        {id: 1, antwoord: 'Antwoord 2', score: 5},
+                        {id: 2, antwoord: 'Antwoord 3', score: 10}
+                    ]
+                }
+            ]
+        },
+        {
+            id: 3,
+            naam: 'CSS 3',
+            vragen: [
+                {
+                    id: 7,
+                    vraag: 'Waar staat CSS 3 voor?',
+                    visible: true,
+                    antwoorden: [
+                        {id: 0, antwoord: 'Antwoord 1', score: 0},
+                        {id: 1, antwoord: 'Antwoord 2', score: 5},
+                        {id: 2, antwoord: 'Antwoord 3', score: 10}
+                    ]
+                },
+                {
+                    id: 8,
+                    vraag: 'Waar zou CSS 3 handig voor zijn?',
+                    visible: true,
+                    antwoorden: [
+                        {id: 0, antwoord: 'Antwoord 1', score: 0},
+                        {id: 1, antwoord: 'Antwoord 2', score: 5},
+                        {id: 2, antwoord: 'Antwoord 3', score: 10}
+                    ]
+                },
+                {
+                    id: 9,
+                    vraag: 'Waar is CSS 3 niet goed voor?',
+                    visible: true,
+                    antwoorden: [
+                        {id: 0, antwoord: 'Antwoord 1', score: 0},
+                        {id: 1, antwoord: 'Antwoord 2', score: 5},
+                        {id: 2, antwoord: 'Antwoord 3', score: 10}
+                    ]
+                }
+            ]
+        },
+        {
+            id: 4,
+            naam: 'PHP',
+            vragen: [
+                {
+                    id: 10,
+                    vraag: 'Waar staat PHP voor?',
+                    visible: true,
+                    antwoorden: [
+                        {id: 0, antwoord: 'Antwoord 1', score: 0},
+                        {id: 1, antwoord: 'Antwoord 2', score: 5},
+                        {id: 2, antwoord: 'Antwoord 3', score: 10}
+                    ]
+                },
+                {
+                    id: 11,
+                    vraag: 'Waar zou PHP handig voor zijn?',
+                    visible: false,
+                    antwoorden: [
+                        {id: 0, antwoord: 'Antwoord 1', score: 0},
+                        {id: 1, antwoord: 'Antwoord 2', score: 5},
+                        {id: 2, antwoord: 'Antwoord 3', score: 10}
+                    ]
+                },
+                {
+                    id: 12,
+                    vraag: 'Waar is PHP niet goed voor?',
+                    visible: true,
+                    antwoorden: [
+                        {id: 0, antwoord: 'Antwoord 1', score: 0},
+                        {id: 1, antwoord: 'Antwoord 2', score: 5},
+                        {id: 2, antwoord: 'Antwoord 3', score: 10}
+                    ]
+                }
+            ]
+        }
+    ];
+
+
+});
+
+app.controller('docentLoginCtrl', function ($scope, $location, socketIO) {
+
+    $scope.loginDocent = function () {
+        socketIO.emit("sign in", {
+            username: $scope.username,
+            password: $scope.password
+        });
+    };
+
+    socketIO.on("sign in success", function (username) {
+        $scope.naam = username;
+        $location.path('/docent/collecties');
+    });
+
+    socketIO.on("sign in error", function () {
+        alert('Helaas. :( De opgevoerde gebruikersnaam en wachtwoord zijn niet correct.');
+        $scope.password = '';
+    });
+
 });
 
 /**
@@ -182,15 +352,18 @@ app.controller('studentRanglijstCtrl', function ($rootScope, $scope, VarService)
  * Collecties controller
  */
 app.controller('collectiesCtrl', function ($rootScope, $scope, socketIO, VarService) {
-	socketIO.emit('getCollections', null, function (error) {
-		if (error) {
-			throw new Error(error.message);
-		}
-	});
-	socketIO.on('collectionUpdate', function (receivedCollecties) {
-		$scope.collecties = receivedCollecties;
-		VarService.collecties = receivedCollecties;
-	});
+
+    socketIO.emit('getCollections', null, function (error) {
+        if (error) {
+            throw new Error(error.message);
+        }
+    });
+
+    socketIO.on('collectionUpdate', function (receivedCollecties) {
+        $scope.collecties = receivedCollecties;
+        VarService.collecties = receivedCollecties;
+    });
+
 });
 
 /**
@@ -199,6 +372,7 @@ app.controller('collectiesCtrl', function ($rootScope, $scope, socketIO, VarServ
 app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarService, $window) {
     $scope.id = $routeParams.id;
     $scope.newQuestion = false;
+    $scope.newAnswer = false;
 
     /**
      * Hier moet een url genereert worden
@@ -207,6 +381,7 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
     $scope.popUpUrl = '#/student';
 
     $scope.vragen = VarService.collecties[$routeParams.id - 1].vragen;
+    $scope.antwoorden = false;
 
     $scope.addQuestion = function (collectie_id, newQuestionInput) {
         $scope.newQuestion = false;
@@ -216,9 +391,9 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
                 vraag: newQuestionInput,
                 visible: true,
                 antwoorden: [
-                    {id: 0, antwoord: 'Antwoord 1', waar: true},
-                    {id: 1, antwoord: 'Antwoord 2', waar: false},
-                    {id: 2, antwoord: 'Antwoord 3', waar: false}
+                    {id: 0, antwoord: 'Antwoord 1', score: 0},
+                    {id: 1, antwoord: 'Antwoord 2', score: 5},
+                    {id: 2, antwoord: 'Antwoord 3', score: 10}
                 ]
             });
         }
@@ -239,11 +414,38 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
     };
 
     $scope.changeVisbility = function (index) {
-        if(VarService.collecties[$routeParams.id - 1].vragen[index].visible){
+        if (VarService.collecties[$routeParams.id - 1].vragen[index].visible) {
             VarService.collecties[$routeParams.id - 1].vragen[index].visible = false;
         } else {
             VarService.collecties[$routeParams.id - 1].vragen[index].visible = true;
         }
+    };
+
+    $scope.toggleAddAnswer = function (questionIndex) {
+        if ($scope.newAnswer) {
+            $scope.newAnswer = false;
+            $scope.antwoorden = false;
+            $scope.vraagTitle = false;
+        } else {
+            $scope.vraagTitle = VarService.collecties[$routeParams.id - 1].vragen[questionIndex].vraag;
+            $scope.antwoorden = VarService.collecties[$routeParams.id - 1].vragen[questionIndex].antwoorden;
+            $scope.newAnswer = true;
+        }
+    };
+
+    $scope.addAnswer = function (newAnswerInput, scoreInput) {
+        if (newAnswerInput.length > 0) {
+            $scope.antwoorden.push(
+                {id: 0, antwoord: newAnswerInput, score: scoreInput}
+            );
+
+            $scope.newAnswerInput = '';
+            $scope.scoreInput = '';
+        }
+    };
+
+    $scope.deleteAnswer = function (index) {
+        $scope.antwoorden.splice(index, 1);
     };
 
     // Private function
@@ -274,6 +476,14 @@ app.controller('deelnemersCtrl', function ($rootScope, $scope, VarService) {
 
     $scope.deelnemers = VarService.deelnemers;
 
+//    setInterval(function () {
+//        console.log('First name being reset');
+//        $scope.$apply(function () {
+//                VarService.deelnemers.push({id: 10, naam: 'tyuio'});
+//            }
+//        )
+//    }, 1000);
+
 });
 
 /**
@@ -283,65 +493,27 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
 
     $scope.collectieId = $routeParams.collectieId;
     $scope.vraagId = $routeParams.vraagId;
-    $scope.vragen = VarService.vragen;
+    $scope.antwoorden = VarService.collecties[$scope.collectieId - 1].vragen[$scope.vraagId - 1].antwoorden;
+    $scope.vraag = VarService.collecties[$scope.collectieId - 1].vragen[$scope.vraagId - 1].vraag;
+    $scope.processTime = 10; // In seconds
+    $scope.processBar = 100;
+    $scope.nextButton = false;
 
+    // Private functions
+    var updateBar = function () {
+        $scope.$apply(function () {
+            if ($scope.processTime >= 0){
+                var tmp_var = ($scope.processTime * 1000) / 100;
+                $scope.processBar = tmp_var;
+                $scope.processTime -= 0.1;
+            } else {
+                $scope.nextButton = true;
+            }
+        });
+    };
+
+    setInterval(updateBar, 100);
 });
 
-//app.controller("nameFormController", function ($scope, $location) {
-//
-//	$scope.userName = "";
-//
-//	$scope.submitUserName = function () {
-//		$location.path("/blocks/" + $scope.userName);
-//	}
-//
-//});
-//
-//app.controller("blocksController", function ($scope, $routeParams, socketIO) {
-//	socketIO.emit("sign in", $routeParams.name);
-//
-//	socketIO.on("sign in reply", function (players) {
-//		console.log("SIGNINREPLY:", players);
-//		$scope.playerSet = players;
-//		$scope.player = $scope.playerSet[ socketIO.id() ]; // We're storing the player in an object
-//		// indexed by socket-id (see server code).
-//		// We no longer have to rely on the current
-//		// player being the last player in the array.
-//	});
-//	socketIO.on("new player", function (newPlayerInfo) {
-//		$scope.playerSet[newPlayerInfo.socketId] = newPlayerInfo;
-//	});
-//	socketIO.on("update other player", function (playerInfo) {
-//		$scope.playerSet[playerInfo.socketId] = playerInfo;
-//	});
-//	socketIO.on("player has left", function (id) {
-//		delete $scope.playerSet[id];
-//	});
-//
-//	// This is no longer an array. We'll use a JS object where the keys
-//	// are socket ids, and the values are player-objects.
-//	// Therefore the name is changed from "playerList" to "playerSet".
-//	$scope.playerSet = null;
-//	$scope.player = null;
-//
-//	$scope.key = function (evt) {
-//		console.log("KEY:", evt.keyCode);
-//
-//		var step = 15;
-//
-//		if (evt.keyCode == 37) { //LEFT
-//			$scope.player.x -= step;
-//			evt.preventDefault();
-//		} else if (evt.keyCode == 38) { //UP
-//			$scope.player.y -= step;
-//			evt.preventDefault();
-//		} else if (evt.keyCode == 39) { //RIGHT
-//			$scope.player.x += step;
-//			evt.preventDefault();
-//		} else if (evt.keyCode == 40) { //DOWN
-//			$scope.player.y += step;
-//			evt.preventDefault();
-//		}
-//		socketIO.emit("update player", $scope.player);
-//	}
-//});
+
+

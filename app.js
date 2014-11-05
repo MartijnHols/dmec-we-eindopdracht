@@ -184,155 +184,155 @@ var playerController = {
 };
 
 var collecties = [
-	{
-		id: 1,
-		naam: 'AJAX',
-		vragen: [
-			{
-				id: 1,
-				vraag: 'Waar kan je AJAX voor gebruiken?',
-				visible: true,
-				antwoorden: [
-					{id: 0, antwoord: 'Het asynchroon updaten van content.', waar: false},
-					{id: 1, antwoord: 'Het asynchroon verzenden en ophalen van gegevens.', waar: true},
-					{id: 2, antwoord: 'Het asynchroon wijzigen van de pagina.', waar: false},
-					{id: 3, antwoord: 'Als protocol voor de verzending van data.', waar: false}
-				]
-			},
-			{
-				id: 2,
-				vraag: 'Waar zou AJAX handig voor zijn?',
-				visible: false,
-				antwoorden: [
-					{id: 0, antwoord: 'Antwoord 1', waar: true},
-					{id: 1, antwoord: 'Antwoord 2', waar: false},
-					{id: 2, antwoord: 'Antwoord 3', waar: false}
-				]
-			},
-			{
-				id: 3,
-				vraag: 'Waar is AJAX niet goed voor?',
-				visible: true,
-				antwoorden: [
-					{id: 0, antwoord: 'Antwoord 1', waar: true},
-					{id: 1, antwoord: 'Antwoord 2', waar: false},
-					{id: 2, antwoord: 'Antwoord 3', waar: false}
-				]
-			}
-		]
-	},
-	{
-		id: 2,
-		naam: 'HTML 5',
-		vragen: [
-			{
-				id: 4,
-				vraag: 'Waar staat HTML 5 voor?',
-				visible: true,
-				antwoorden: [
-					{id: 0, antwoord: 'Antwoord 1', waar: true},
-					{id: 1, antwoord: 'Antwoord 2', waar: false},
-					{id: 2, antwoord: 'Antwoord 3', waar: false}
-				]
-			},
-			{
-				id: 5,
-				vraag: 'Waar zou HTML 5 handig voor zijn?',
-				visible: false,
-				antwoorden: [
-					{id: 0, antwoord: 'Antwoord 1', waar: true},
-					{id: 1, antwoord: 'Antwoord 2', waar: false},
-					{id: 2, antwoord: 'Antwoord 3', waar: false}
-				]
-			},
-			{
-				id: 6,
-				vraag: 'Waar is HTML 5 niet goed voor?',
-				visible: true,
-				antwoorden: [
-					{id: 0, antwoord: 'Antwoord 1', waar: true},
-					{id: 1, antwoord: 'Antwoord 2', waar: false},
-					{id: 2, antwoord: 'Antwoord 3', waar: false}
-				]
-			}
-		]
-	},
-	{
-		id: 3,
-		naam: 'CSS 3',
-		vragen: [
-			{
-				id: 7,
-				vraag: 'Waar staat CSS 3 voor?',
-				visible: true,
-				antwoorden: [
-					{id: 0, antwoord: 'Antwoord 1', waar: true},
-					{id: 1, antwoord: 'Antwoord 2', waar: false},
-					{id: 2, antwoord: 'Antwoord 3', waar: false}
-				]
-			},
-			{
-				id: 8,
-				vraag: 'Waar zou CSS 3 handig voor zijn?',
-				visible: true,
-				antwoorden: [
-					{id: 0, antwoord: 'Antwoord 1', waar: true},
-					{id: 1, antwoord: 'Antwoord 2', waar: false},
-					{id: 2, antwoord: 'Antwoord 3', waar: false}
-				]
-			},
-			{
-				id: 9,
-				vraag: 'Waar is CSS 3 niet goed voor?',
-				visible: true,
-				antwoorden: [
-					{id: 0, antwoord: 'Antwoord 1', waar: true},
-					{id: 1, antwoord: 'Antwoord 2', waar: false},
-					{id: 2, antwoord: 'Antwoord 3', waar: false}
-				]
-			}
-		]
-	},
-	{
-		id: 4,
-		naam: 'PHP',
-		vragen: [
-			{
-				id: 10,
-				vraag: 'Waar staat PHP voor?',
-				visible: true,
-				antwoorden: [
-					{id: 0, antwoord: 'Antwoord 1', waar: true},
-					{id: 1, antwoord: 'Antwoord 2', waar: false},
-					{id: 2, antwoord: 'Antwoord 3', waar: false}
-				]
-			},
-			{
-				id: 11,
-				vraag: 'Waar zou PHP handig voor zijn?',
-				visible: false,
-				antwoorden: [
-					{id: 0, antwoord: 'Antwoord 1', waar: true},
-					{id: 1, antwoord: 'Antwoord 2', waar: false},
-					{id: 2, antwoord: 'Antwoord 3', waar: false}
-				]
-			},
-			{
-				id: 12,
-				vraag: 'Waar is PHP niet goed voor?',
-				visible: true,
-				antwoorden: [
-					{id: 0, antwoord: 'Antwoord 1', waar: true},
-					{id: 1, antwoord: 'Antwoord 2', waar: false},
-					{id: 2, antwoord: 'Antwoord 3', waar: false}
-				]
-			}
-		]
-	}
+    {
+        id: 1,
+        naam: 'AJAX',
+        vragen: [
+            {
+                id: 1,
+                vraag: 'Waar kan je AJAX voor gebruiken?',
+                visible: true,
+                antwoorden: [
+                    {id: 0, antwoord: 'Het asynchroon updaten van content.', score: 10},
+                    {id: 1, antwoord: 'Het asynchroon verzenden en ophalen van gegevens.', score: 10},
+                    {id: 2, antwoord: 'Het asynchroon wijzigen van de pagina.', score: 5},
+                    {id: 3, antwoord: 'Als protocol voor de verzending van data.', score: 0}
+                ]
+            },
+            {
+                id: 2,
+                vraag: 'Waar zou AJAX handig voor zijn?',
+                visible: false,
+                antwoorden: [
+                    {id: 0, antwoord: 'Antwoord 1', score: 0},
+                    {id: 1, antwoord: 'Antwoord 2', score: 5},
+                    {id: 2, antwoord: 'Antwoord 3', score: 10}
+                ]
+            },
+            {
+                id: 3,
+                vraag: 'Waar is AJAX niet goed voor?',
+                visible: true,
+                antwoorden: [
+                    {id: 0, antwoord: 'Antwoord 1', score: 0},
+                    {id: 1, antwoord: 'Antwoord 2', score: 5},
+                    {id: 2, antwoord: 'Antwoord 3', score: 10}
+                ]
+            }
+        ]
+    },
+    {
+        id: 2,
+        naam: 'HTML 5',
+        vragen: [
+            {
+                id: 4,
+                vraag: 'Waar staat HTML 5 voor?',
+                visible: true,
+                antwoorden: [
+                    {id: 0, antwoord: 'Antwoord 1', score: 0},
+                    {id: 1, antwoord: 'Antwoord 2', score: 5},
+                    {id: 2, antwoord: 'Antwoord 3', score: 10}
+                ]
+            },
+            {
+                id: 5,
+                vraag: 'Waar zou HTML 5 handig voor zijn?',
+                visible: false,
+                antwoorden: [
+                    {id: 0, antwoord: 'Antwoord 1', score: 0},
+                    {id: 1, antwoord: 'Antwoord 2', score: 5},
+                    {id: 2, antwoord: 'Antwoord 3', score: 10}
+                ]
+            },
+            {
+                id: 6,
+                vraag: 'Waar is HTML 5 niet goed voor?',
+                visible: true,
+                antwoorden: [
+                    {id: 0, antwoord: 'Antwoord 1', score: 0},
+                    {id: 1, antwoord: 'Antwoord 2', score: 5},
+                    {id: 2, antwoord: 'Antwoord 3', score: 10}
+                ]
+            }
+        ]
+    },
+    {
+        id: 3,
+        naam: 'CSS 3',
+        vragen: [
+            {
+                id: 7,
+                vraag: 'Waar staat CSS 3 voor?',
+                visible: true,
+                antwoorden: [
+                    {id: 0, antwoord: 'Antwoord 1', score: 0},
+                    {id: 1, antwoord: 'Antwoord 2', score: 5},
+                    {id: 2, antwoord: 'Antwoord 3', score: 10}
+                ]
+            },
+            {
+                id: 8,
+                vraag: 'Waar zou CSS 3 handig voor zijn?',
+                visible: true,
+                antwoorden: [
+                    {id: 0, antwoord: 'Antwoord 1', score: 0},
+                    {id: 1, antwoord: 'Antwoord 2', score: 5},
+                    {id: 2, antwoord: 'Antwoord 3', score: 10}
+                ]
+            },
+            {
+                id: 9,
+                vraag: 'Waar is CSS 3 niet goed voor?',
+                visible: true,
+                antwoorden: [
+                    {id: 0, antwoord: 'Antwoord 1', score: 0},
+                    {id: 1, antwoord: 'Antwoord 2', score: 5},
+                    {id: 2, antwoord: 'Antwoord 3', score: 10}
+                ]
+            }
+        ]
+    },
+    {
+        id: 4,
+        naam: 'PHP',
+        vragen: [
+            {
+                id: 10,
+                vraag: 'Waar staat PHP voor?',
+                visible: true,
+                antwoorden: [
+                    {id: 0, antwoord: 'Antwoord 1', score: 0},
+                    {id: 1, antwoord: 'Antwoord 2', score: 5},
+                    {id: 2, antwoord: 'Antwoord 3', score: 10}
+                ]
+            },
+            {
+                id: 11,
+                vraag: 'Waar zou PHP handig voor zijn?',
+                visible: false,
+                antwoorden: [
+                    {id: 0, antwoord: 'Antwoord 1', score: 0},
+                    {id: 1, antwoord: 'Antwoord 2', score: 5},
+                    {id: 2, antwoord: 'Antwoord 3', score: 10}
+                ]
+            },
+            {
+                id: 12,
+                vraag: 'Waar is PHP niet goed voor?',
+                visible: true,
+                antwoorden: [
+                    {id: 0, antwoord: 'Antwoord 1', score: 0},
+                    {id: 1, antwoord: 'Antwoord 2', score: 5},
+                    {id: 2, antwoord: 'Antwoord 3', score: 10}
+                ]
+            }
+        ]
+    }
 ];
 
 io.on("connection", function (socket) {
-	console.log("CONNECT:", socket.id);
+    console.log("CONNECT:", socket.id);
 
 	socket.on("disconnect", function () {
 		console.log("DISCONNECT", socket.id);
@@ -403,6 +403,6 @@ io.on("connection", function (socket) {
 });
 
 httpServer.listen(3000, function () {
-	console.log("Server running on port 3000.");
+    console.log("Server running on port 3000.");
 });
 
