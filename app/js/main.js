@@ -229,6 +229,7 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
 	VarService.collectieId = $routeParams.id;
 	$scope.newQuestion = false;
 	$scope.newAnswer = false;
+	$scope.deelnemersBtn = false;
 
 	$scope.vragen = VarService.collecties[$routeParams.id].vragen;
 	$scope.antwoorden = false;
@@ -262,10 +263,13 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
 	$scope.openStudentLink = function () {
 		socketIO.emit('open-quiz');
 	};
+
 	socketIO.on('quiz-opened', function (quizId) {
 		VarService.quizId = quizId;
 		$window.open('#/link/' + quizId);
+		$scope.deelnemersBtn = true;
 	});
+
 	$scope.$on('$destroy', function () {
 		socketIO.off('quiz-opened');
 	});
