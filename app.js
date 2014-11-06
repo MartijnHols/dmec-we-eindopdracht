@@ -125,11 +125,33 @@ function Quiz(id, quizMaster) {
 		this.vraagStartTime = +new Date();
 	};
 	this.stuurRanglijst = function () {
-//		this.vragen = null;
-//		this.vraagNr = null;
-//		this.vraagStartTime = null;
+		// Vind de max haalbare score
+		var maxScore = 0;
+		for (var i = 0, len = this.vragen.length; i < len; i++) {
+			var vraag = this.vragen[i];
 
-		var ranglijst;
+			// Vind de max score die bij deze vraag te halen valt
+			var maxAntwoordScore = 0;
+			for (var j = 0, antwoordenLen = vraag.antwoorden.length; j < antwoordenLen; j++) {
+				var antwoord = vraag.antwoorden[j];
+				if (vraag.score > maxAntwoordScore) {
+					maxAntwoordScore = vraag.score;
+				}
+			}
+			maxScore += maxAntwoordScore;
+		}
+
+		var ranglijst = [];
+		for (var socketId in this.players) {
+			var player = this.players[socketId];
+
+			var score = player.getScore();
+			ranglijst.push({
+				naam: player.naam,
+				score: score,
+				maxScore: maxScore
+			});
+		}
 
 		for (var socketId in this.players) {
 			var player = this.players[socketId];

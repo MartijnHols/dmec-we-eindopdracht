@@ -418,6 +418,12 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
 /**
  * Docent ranglijst controller
  */
-app.controller('docentRanglijstCtrl', function ($rootScope, $scope, $routeParams, VarService, $location) {
-	$scope.rangLijst = VarService.deelnemers;
+app.controller('docentRanglijstCtrl', function ($rootScope, $scope, $routeParams, VarService, socketIO) {
+	socketIO.on('ranglijst', function (ranglijst) {
+		$scope.rangLijst = ranglijst;
+	});
+
+	$scope.$on('$destroy', function () {
+		socketIO.off('ranglijst');
+	});
 });
