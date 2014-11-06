@@ -66,15 +66,15 @@ function Quiz(id, quizMaster) {
 	 * Start de quiz.
 	 */
 	this.start = function () {
-		if (vragen.length === 0) {
+		if (this.vragen.length === 0) {
 			throw new Error('De quiz kan niet gestart worden zonder vragen.');
 		}
 		this.started = true;
 		for (var socketId in this.players) {
 			var player = this.players[socketId];
-			player.socket.emit('quiz-start', vragen[0]);
+			player.socket.emit('quiz-start', this.vragen[0]);
 		}
-		this.quizMaster.socket.emit('quiz-start', vragen[0]);
+		this.quizMaster.socket.emit('quiz-start', this.vragen[0]);
 	};
 	/**
 	 * End the quiz, removing all players.
@@ -191,156 +191,147 @@ var playerController = {
 	}
 };
 
-var collecties = [
-    {
-        id: 1,
-        naam: 'AJAX',
-        vragen: [
-            {
-                id: 1,
-                vraag: 'Waar kan je AJAX voor gebruiken?',
-                visible: true,
-                antwoorden: [
-                    {id: 0, antwoord: 'Het asynchroon updaten van content.', score: 10},
-                    {id: 1, antwoord: 'Het asynchroon verzenden en ophalen van gegevens.', score: 10},
-                    {id: 2, antwoord: 'Het asynchroon wijzigen van de pagina.', score: 5},
-                    {id: 3, antwoord: 'Als protocol voor de verzending van data.', score: 0}
-                ]
-            },
-            {
-                id: 2,
-                vraag: 'Waar zou AJAX handig voor zijn?',
-                visible: false,
-                antwoorden: [
-                    {id: 0, antwoord: 'Antwoord 1', score: 0},
-                    {id: 1, antwoord: 'Antwoord 2', score: 5},
-                    {id: 2, antwoord: 'Antwoord 3', score: 10}
-                ]
-            },
-            {
-                id: 3,
-                vraag: 'Waar is AJAX niet goed voor?',
-                visible: true,
-                antwoorden: [
-                    {id: 0, antwoord: 'Antwoord 1', score: 0},
-                    {id: 1, antwoord: 'Antwoord 2', score: 5},
-                    {id: 2, antwoord: 'Antwoord 3', score: 10}
-                ]
-            }
-        ]
-    },
-    {
-        id: 2,
-        naam: 'HTML 5',
-        vragen: [
-            {
-                id: 4,
-                vraag: 'Waar staat HTML 5 voor?',
-                visible: true,
-                antwoorden: [
-                    {id: 0, antwoord: 'Antwoord 1', score: 0},
-                    {id: 1, antwoord: 'Antwoord 2', score: 5},
-                    {id: 2, antwoord: 'Antwoord 3', score: 10}
-                ]
-            },
-            {
-                id: 5,
-                vraag: 'Waar zou HTML 5 handig voor zijn?',
-                visible: false,
-                antwoorden: [
-                    {id: 0, antwoord: 'Antwoord 1', score: 0},
-                    {id: 1, antwoord: 'Antwoord 2', score: 5},
-                    {id: 2, antwoord: 'Antwoord 3', score: 10}
-                ]
-            },
-            {
-                id: 6,
-                vraag: 'Waar is HTML 5 niet goed voor?',
-                visible: true,
-                antwoorden: [
-                    {id: 0, antwoord: 'Antwoord 1', score: 0},
-                    {id: 1, antwoord: 'Antwoord 2', score: 5},
-                    {id: 2, antwoord: 'Antwoord 3', score: 10}
-                ]
-            }
-        ]
-    },
-    {
-        id: 3,
-        naam: 'CSS 3',
-        vragen: [
-            {
-                id: 7,
-                vraag: 'Waar staat CSS 3 voor?',
-                visible: true,
-                antwoorden: [
-                    {id: 0, antwoord: 'Antwoord 1', score: 0},
-                    {id: 1, antwoord: 'Antwoord 2', score: 5},
-                    {id: 2, antwoord: 'Antwoord 3', score: 10}
-                ]
-            },
-            {
-                id: 8,
-                vraag: 'Waar zou CSS 3 handig voor zijn?',
-                visible: true,
-                antwoorden: [
-                    {id: 0, antwoord: 'Antwoord 1', score: 0},
-                    {id: 1, antwoord: 'Antwoord 2', score: 5},
-                    {id: 2, antwoord: 'Antwoord 3', score: 10}
-                ]
-            },
-            {
-                id: 9,
-                vraag: 'Waar is CSS 3 niet goed voor?',
-                visible: true,
-                antwoorden: [
-                    {id: 0, antwoord: 'Antwoord 1', score: 0},
-                    {id: 1, antwoord: 'Antwoord 2', score: 5},
-                    {id: 2, antwoord: 'Antwoord 3', score: 10}
-                ]
-            }
-        ]
-    },
-    {
-        id: 4,
-        naam: 'PHP',
-        vragen: [
-            {
-                id: 10,
-                vraag: 'Waar staat PHP voor?',
-                visible: true,
-                antwoorden: [
-                    {id: 0, antwoord: 'Antwoord 1', score: 0},
-                    {id: 1, antwoord: 'Antwoord 2', score: 5},
-                    {id: 2, antwoord: 'Antwoord 3', score: 10}
-                ]
-            },
-            {
-                id: 11,
-                vraag: 'Waar zou PHP handig voor zijn?',
-                visible: false,
-                antwoorden: [
-                    {id: 0, antwoord: 'Antwoord 1', score: 0},
-                    {id: 1, antwoord: 'Antwoord 2', score: 5},
-                    {id: 2, antwoord: 'Antwoord 3', score: 10}
-                ]
-            },
-            {
-                id: 12,
-                vraag: 'Waar is PHP niet goed voor?',
-                visible: true,
-                antwoorden: [
-                    {id: 0, antwoord: 'Antwoord 1', score: 0},
-                    {id: 1, antwoord: 'Antwoord 2', score: 5},
-                    {id: 2, antwoord: 'Antwoord 3', score: 10}
-                ]
-            }
-        ]
-    }
-];
+var collecties = {
+	1: {
+		id: 1,
+		naam: 'AJAX',
+		vragen: {
+			1: {
+				id: 1,
+				vraag: 'Waar kan je AJAX voor gebruiken?',
+				visible: true,
+				antwoorden: [
+					{id: 0, antwoord: 'Het asynchroon updaten van content.', score: 10},
+					{id: 1, antwoord: 'Het asynchroon verzenden en ophalen van gegevens.', score: 10},
+					{id: 2, antwoord: 'Het asynchroon wijzigen van de pagina.', score: 5},
+					{id: 3, antwoord: 'Als protocol voor de verzending van data.', score: 0}
+				]
+			},
+			2: {
+				id: 2,
+				vraag: 'Waar zou AJAX handig voor zijn?',
+				visible: false,
+				antwoorden: [
+					{id: 0, antwoord: 'Antwoord 1', score: 0},
+					{id: 1, antwoord: 'Antwoord 2', score: 5},
+					{id: 2, antwoord: 'Antwoord 3', score: 10}
+				]
+			},
+			3: {
+				id: 3,
+				vraag: 'Waar is AJAX niet goed voor?',
+				visible: true,
+				antwoorden: [
+					{id: 0, antwoord: 'Antwoord 1', score: 0},
+					{id: 1, antwoord: 'Antwoord 2', score: 5},
+					{id: 2, antwoord: 'Antwoord 3', score: 10}
+				]
+			}
+		}
+	},
+	2: {
+		id: 2,
+		naam: 'HTML 5',
+		vragen: {
+			4: {
+				id: 4,
+				vraag: 'Waar staat HTML 5 voor?',
+				visible: true,
+				antwoorden: [
+					{id: 0, antwoord: 'Antwoord 1', score: 0},
+					{id: 1, antwoord: 'Antwoord 2', score: 5},
+					{id: 2, antwoord: 'Antwoord 3', score: 10}
+				]
+			},
+			5: {
+				id: 5,
+				vraag: 'Waar zou HTML 5 handig voor zijn?',
+				visible: false,
+				antwoorden: [
+					{id: 0, antwoord: 'Antwoord 1', score: 0},
+					{id: 1, antwoord: 'Antwoord 2', score: 5},
+					{id: 2, antwoord: 'Antwoord 3', score: 10}
+				]
+			},
+			6: {
+				id: 6,
+				vraag: 'Waar is HTML 5 niet goed voor?',
+				visible: true,
+				antwoorden: [
+					{id: 0, antwoord: 'Antwoord 1', score: 0},
+					{id: 1, antwoord: 'Antwoord 2', score: 5},
+					{id: 2, antwoord: 'Antwoord 3', score: 10}
+				]
+			}
+		}
+	},
+	3: {
+		id: 3,
+		naam: 'CSS 3',
+		vragen: {
+			7: {
+				id: 7,
+				vraag: 'Waar staat CSS 3 voor?',
+				visible: true,
+				antwoorden: [
+					{id: 0, antwoord: 'Antwoord 1', score: 0},
+					{id: 1, antwoord: 'Antwoord 2', score: 5},
+					{id: 2, antwoord: 'Antwoord 3', score: 10}
+				]
+			},
+			8: {
+				id: 8,
+				vraag: 'Waar zou CSS 3 handig voor zijn?',
+				visible: true,
+				antwoorden: [
+					{id: 0, antwoord: 'Antwoord 1', score: 0},
+					{id: 1, antwoord: 'Antwoord 2', score: 5},
+					{id: 2, antwoord: 'Antwoord 3', score: 10}
+				]
+			},
+			9: {
+				id: 9,
+				vraag: 'Waar is CSS 3 niet goed voor?',
+				visible: true,
+				antwoorden: [
+					{id: 0, antwoord: 'Antwoord 1', score: 0},
+					{id: 1, antwoord: 'Antwoord 2', score: 5},
+					{id: 2, antwoord: 'Antwoord 3', score: 10}
+				]
+			}
+		}
+	},
+	4: {
+		id: 4,
+		naam: 'PHP',
+		vragen: {
+			10: {
+				id: 10, vraag: 'Waar staat PHP voor?', visible: true, antwoorden: [
+					{id: 0, antwoord: 'Antwoord 1', score: 0},
+					{id: 1, antwoord: 'Antwoord 2', score: 5},
+					{id: 2, antwoord: 'Antwoord 3', score: 10}
+				]
+			},
+			11: {
+				id: 11, vraag: 'Waar zou PHP handig voor zijn?', visible: false, antwoorden: [
+					{id: 0, antwoord: 'Antwoord 1', score: 0},
+					{id: 1, antwoord: 'Antwoord 2', score: 5},
+					{id: 2, antwoord: 'Antwoord 3', score: 10}
+				]
+			},
+			12: {
+				id: 12, vraag: 'Waar is PHP niet goed voor?', visible: true, antwoorden: [
+					{id: 0, antwoord: 'Antwoord 1', score: 0},
+					{id: 1, antwoord: 'Antwoord 2', score: 5},
+					{id: 2, antwoord: 'Antwoord 3', score: 10}
+				]
+			}
+		}
+	}
+};
 
 io.on("connection", function (socket) {
-    console.log("CONNECT:", socket.id);
+	console.log("CONNECT:", socket.id);
 
 	socket.on("disconnect", function () {
 		console.log("DISCONNECT", socket.id);
@@ -369,7 +360,9 @@ io.on("connection", function (socket) {
 	});
 
 	socket.on("get-collections", function (name, fn) {
-		if (!quizMasterController.isLoggedIn(socket)) return fn({message:'Niet ingelogd.'});
+		if (!quizMasterController.isLoggedIn(socket)) {
+			return fn({message: 'Niet ingelogd.'});
+		}
 
 		console.log(socket.id + ': getCollections');
 		socket.emit('collections-update', collecties);
@@ -377,7 +370,9 @@ io.on("connection", function (socket) {
 
 	socket.on('open-quiz', function (name, fn) {
 		console.log('open-quiz');
-		if (!quizMasterController.isLoggedIn(socket)) return fn({message:'Niet ingelogd.'});
+		if (!quizMasterController.isLoggedIn(socket)) {
+			return fn({message: 'Niet ingelogd.'});
+		}
 
 		var quizMaster = quizMasterController.get(socket);
 		var quizId = quizController.openQuiz(quizMaster);
@@ -385,27 +380,29 @@ io.on("connection", function (socket) {
 		socket.emit('quiz-opened', quizId);
 	});
 	socket.on('start-quiz', function (options, fn) {
-		if (!quizMasterController.isLoggedIn(socket)) return fn({message:'Niet ingelogd.'});
+		if (!quizMasterController.isLoggedIn(socket)) {
+			return fn({message: 'Niet ingelogd.'});
+		}
 
 		var quiz = quizController.get(options.quizId);
 		if (quiz.quizMaster != quizMasterController.get(socket)) {
-			return fn({message:'U bent niet quizmaster van deze quiz.'});
+			return fn({message: 'U bent niet quizmaster van deze quiz.'});
 		}
 		quiz.vragen = options.vragen;
 		quiz.start();
 	});
-	
+
 	socket.on('player-sign-in', function (options, fn) {
 		var quiz = quizController.get(options.quizId);
 		if (!quiz) {
-			return fn({message:'Deze quiz bestaat niet.'});
+			return fn({message: 'Deze quiz bestaat niet.'});
 		}
 		// Create player object
 		var player = playerController.addPlayer(socket, options.naam, quiz);
 		// Register player in our quiz
 		quiz.addPlayer(player);
 		// Let quiz master know
-//		quiz.quizMaster.socket.emit('player-joined', player.naam);
+		//		quiz.quizMaster.socket.emit('player-joined', player.naam);
 		deelnemersUpdate(quiz.quizMaster);
 
 		socket.emit('player-sign-in-success');
@@ -429,13 +426,15 @@ io.on("connection", function (socket) {
 	}
 
 	socket.on('get-deelnemers', function (fn) {
-		if (!quizMasterController.isLoggedIn(socket)) return fn({message:'Niet ingelogd.'});
+		if (!quizMasterController.isLoggedIn(socket)) {
+			return fn({message: 'Niet ingelogd.'});
+		}
 
 		deelnemersUpdate(quizMasterController.get(socket));
 	});
 });
 
 httpServer.listen(3000, function () {
-    console.log("Server running on port 3000.");
+	console.log("Server running on port 3000.");
 });
 
