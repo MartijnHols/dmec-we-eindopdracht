@@ -5,3 +5,5 @@
 
 
 # Dwayne
+ - QR code fixen: # ontbreekt in de link die er uit komt, dit komt omdat de URL niet geurlencode wordt
+ - Login aanpassen: zorg dat http://localhost:3000/#/login/oAvt2B ervoor zorgt dat die code in het code veld van de student login komt te staan
