@@ -77,10 +77,10 @@ app.config(['$routeProvider', function ($routeProvider) {
 	}).when('/docent/deelnemers', {
 		templateUrl: 'templates/docent/deelnemers.html',
 		controller: 'deelnemersCtrl'
-	}).when('/docent/vraag/:collectieId/:vraagId', {
+	}).when('/docent/vraag/:vraagId', {
 		templateUrl: 'templates/docent/vraag.html',
 		controller: 'docentVraagCtrl'
-	}).when('/docent/vraag-resulaten/:collectieId/:vraagId', {
+	}).when('/docent/vraag-resulaten/:vraagId', {
 		templateUrl: 'templates/docent/vraag-resulaten.html',
 		controller: 'docentVraagResultatenCtrl'
 	}).when('/docent/ranglijst', {
@@ -100,7 +100,8 @@ app.config(['$routeProvider', function ($routeProvider) {
 app.factory('VarService', function () {
 	return {
 		collecties: null,
-		vragen: null,
+		vraag: null,
+		vraagNr: 0,
 		rangLijst: null,
 		quizId: null,
 		collectieId: null
@@ -192,7 +193,7 @@ app.controller('studentVraagCtrl', function ($rootScope, $scope, $routeParams, V
 	 * de leraar.
 	 */
 	$scope.vraagNummer = $routeParams.vraagNummer;
-	$scope.vragen = VarService.vragen;
+	$scope.vraag = VarService.vraag;
 });
 
 /**
@@ -237,8 +238,9 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
 	$scope.addQuestion = function (collectie_id, newQuestionInput) {
 		$scope.newQuestion = false;
 		if (newQuestionInput.length > 0) {
-			VarService.collecties[$routeParams.id].vragen.push({
-				id: getNewId(),
+			var newId = getNewId();
+			VarService.collecties[$routeParams.id].vragen[newId] = {
+				id: newId,
 				vraag: newQuestionInput,
 				visible: true,
 				antwoorden: [
@@ -246,7 +248,7 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
 					{id: 1, antwoord: 'Antwoord 2', score: 5},
 					{id: 2, antwoord: 'Antwoord 3', score: 10}
 				]
-			});
+			};
 		}
 		$scope.newQuestionInput = '';
 	};
@@ -306,8 +308,8 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
 
 	// Private function
 	function getNewId() {
-		var tmp_array = new Array();
-		for (i = 0; i < VarService.collecties[$routeParams.id].vragen.length; i++) {
+		var tmp_array = [];
+		for (var i = 0; i < VarService.collecties[$routeParams.id].vragen.length; i++) {
 			tmp_array.push(VarService.collecties[$routeParams.id].vragen[i].id);
 		}
 		return Math.max.apply(Math, tmp_array) + 1;
@@ -321,7 +323,7 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
 /**
  * Deelnemers controller
  */
-app.controller('deelnemersCtrl', function ($rootScope, $scope, VarService, socketIO) {
+app.controller('deelnemersCtrl', function ($rootScope, $scope, $location, VarService, socketIO) {
 	socketIO.emit('get-deelnemers');
 	socketIO.on('deelnemers-update', function (deelnemers) {
 		$scope.deelnemers = deelnemers;
@@ -329,43 +331,52 @@ app.controller('deelnemersCtrl', function ($rootScope, $scope, VarService, socke
 
 	$scope.startQuiz = function () {
 		var collectie = VarService.collecties[VarService.collectieId];
+		var geselecteerdeVragen = [];
+		for (var key in collectie.vragen) {
+			var item = collectie.vragen[key];
+			if (item.visible) {
+				geselecteerdeVragen.push(item);
+			}
+		}
 		socketIO.emit('start-quiz', {
 			quizId: VarService.quizId,
-			vragen: []
+			vragen: geselecteerdeVragen
 		});
 	};
+	socketIO.on('nieuwe-vraag', function (options) {
+		VarService.vraagNr = options.vraagNr;
+		VarService.aantalVragen = options.aantalVragen;
+		VarService.vraag = options.vraag;
+		$location.path('/docent/vraag/' + options.vraagNr);
+	});
 
 	$scope.$on('$destroy', function () {
 		socketIO.off('deelnemers-update');
+		// Niet weghalen aan het einde! De bedoeling is dat er meerdere vragen gevangen worden met deze listener
+		//socketIO.off('nieuwe-vraag');
 	});
 });
 
 /**
  * Docent vraag controller
  */
-app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, VarService, $location) {
-	$scope.collectieId = $routeParams.collectieId;
-	$scope.vraagId = $routeParams.vraagId;
-	$scope.antwoorden = VarService.collecties[$scope.collectieId].vragen[$scope.vraagId - 1].antwoorden;
-	$scope.vraag = VarService.collecties[$scope.collectieId].vragen[$scope.vraagId - 1].vraag;
+app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, VarService, $location, socketIO) {
+	$scope.vraagNr = $routeParams.vraagNr;
+	$scope.vraag = $routeParams.vraag;
+
 	$scope.processTime = 10; // In seconds
 	$scope.processBar = 100;
 	$scope.nextButton = false;
 
-	if ($scope.vraagId == VarService.collecties[$scope.collectieId].vragen.length) {
+	if ($scope.vraagNr == VarService.aantalVragen) {
 		$scope.nextButtonText = 'Bekijk resulaten';
 	} else {
 		$scope.nextButtonText = 'Volgende vraag';
 	}
 
 	$scope.nextQuestion = function () {
-		if ($scope.vraagId == VarService.collecties[$scope.collectieId].vragen.length) {
-			console.log('einde');
-			$location.path('/docent/vraag-resulaten/' + $scope.collectieId + '/1');
-		} else {
-			$scope.vraagId++;
-			$location.path('/docent/vraag/' + $scope.collectieId + '/' + $scope.vraagId);
-		}
+		//TODO: Voorkomen dat dit meerdere keren wordt uitgevoerd
+		socketIO.emit('next-question');
 	};
 
 	// Private functions
@@ -388,7 +399,6 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
  * Docent vraag resultaten controller
  */
 app.controller('docentVraagResultatenCtrl', function ($rootScope, $scope, $routeParams, VarService, $location) {
-
 	$scope.collectieId = $routeParams.collectieId;
 	$scope.vraagId = $routeParams.vraagId;
 	$scope.antwoorden = VarService.collecties[$scope.collectieId].vragen[$scope.vraagId - 1].antwoorden;
@@ -406,7 +416,7 @@ app.controller('docentVraagResultatenCtrl', function ($rootScope, $scope, $route
 			$location.path('/docent/ranglijst');
 		} else {
 			$scope.vraagId++;
-			$location.path('/docent/vraag-resulaten/' + $scope.collectieId + '/' + $scope.vraagId);
+			$location.path('/docent/vraag-resulaten/' + $scope.vraagId);
 		}
 	};
 

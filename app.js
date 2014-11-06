@@ -72,9 +72,9 @@ function Quiz(id, quizMaster) {
 		this.started = true;
 		for (var socketId in this.players) {
 			var player = this.players[socketId];
-			player.socket.emit('quiz-start', this.vragen[0]);
+			player.socket.emit('nieuwe-vraag', this.vragen[0]);
 		}
-		this.quizMaster.socket.emit('quiz-start', this.vragen[0]);
+		this.quizMaster.socket.emit('nieuwe-vraag', this.vragen[0]);
 	};
 	/**
 	 * End the quiz, removing all players.
