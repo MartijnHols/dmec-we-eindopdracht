@@ -109,7 +109,7 @@ app.factory('VarService', function () {
 });
 
 app.controller('linkCtrl', function ($scope, $routeParams) {
-	$scope.link =location.protocol + '//' + location.host + '/#/login/' + $routeParams.quizId;
+	$scope.link = location.protocol + '//' + location.host + '/#/login/' + $routeParams.quizId;
 	$scope.qrCode = 'https://chart.googleapis.com/chart?cht=qr&chs=500x500&chl=' + encodeURIComponent(location.protocol + '//' + location.host + '/#/login/' + $routeParams.quizId);
 
 });
@@ -144,7 +144,6 @@ app.controller('docentLoginCtrl', function ($scope, $location, socketIO) {
 app.controller('studentLoginCtrl', function ($scope, $location, socketIO, $routeParams) {
 
 	$scope.quizPass = $routeParams.quizPass;
-
 	$scope.loginError = false;
 
 	$scope.loginStudent = function () {
@@ -231,6 +230,7 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
 	VarService.collectieId = $routeParams.id;
 	$scope.newQuestion = false;
 	$scope.newAnswer = false;
+	$scope.deelnemersBtn = false;
 
 	$scope.vragen = VarService.collecties[$routeParams.id].vragen;
 	$scope.antwoorden = false;
@@ -265,10 +265,13 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
 	$scope.openStudentLink = function () {
 		socketIO.emit('open-quiz');
 	};
+
 	socketIO.on('quiz-opened', function (quizId) {
 		VarService.quizId = quizId;
 		$window.open('#/link/' + quizId);
+		$scope.deelnemersBtn = true;
 	});
+
 	$scope.$on('$destroy', function () {
 		socketIO.off('quiz-opened');
 	});

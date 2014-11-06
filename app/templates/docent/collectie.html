@@ -113,22 +113,22 @@
         </table>
     </div>
     <div class="col-md-3">
+        <div ng-hide="deelnemersBtn" class="form-group">
+            <button class="btn btn-default col-md-12" ng-click="openStudentLink()">Zet Quiz open <i
+                    class="fa fa-share-square-o"></i></button>
+        </div>
+        <div ng-show="deelnemersBtn" class="form-group">
+            <a href="#/docent/deelnemers" class="btn btn-primary col-md-12">Ga verder naar <br/> deelnemers <i
+                    class="fa fa-reply fa-flip-horizontal"></i></a>
+        </div>
         <div class="form-group" ng-hide="newQuestion">
             <button type="button" ng-click="newQuestion = !newQuestion" class="btn btn-success col-md-12">Vraag
                 toevoegen <i class="fa fa-plus"></i></button>
         </div>
         <hr/>
         <div class="form-group">
-            <a href="#/docent/deelnemers" class="btn btn-primary col-md-12">Ga naar deelnemers <i
-                    class="fa fa-reply fa-flip-horizontal"></i></a>
-        </div>
-        <div class="form-group">
             <a href="#/docent/collecties" class="btn btn-default col-md-12">Terug naar collectie's <i
                     class="fa fa-reply"></i></a>
-        </div>
-        <div class="form-group">
-            <button class="btn btn-default col-md-12" ng-click="openStudentLink()">Open link Popup <i
-                    class="fa fa-share-square-o"></i></button>
         </div>
         <hr/>
         <div class="form-group">
