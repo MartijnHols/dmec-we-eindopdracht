@@ -18,13 +18,16 @@ app.factory('socketIO', function ($rootScope) {
 	return {
 		on: function (eventName, callback) {
 			console.log('bind "' + eventName + '"');
-			socket.on(eventName, function () {
+			return socket.on(eventName, function () {
 				console.log(eventName);
 				var args = arguments;
 				$rootScope.$apply(function () {
 					callback.apply(socket, args);
 				});
 			});
+		},
+		off: function (eventName) {
+			return socket.off(eventName);
 		},
 		emit: function (eventName, data, callback) {
 			console.log(eventName, data);
@@ -104,7 +107,6 @@ app.controller('linkCtrl', function ($scope, $routeParams) {
 });
 
 app.controller('docentLoginCtrl', function ($scope, $location, socketIO) {
-
 	$scope.loginError = false;
 	$scope.loginMessage = 'De opgegeven gebruikersnaam of wachtwoord zijn niet correct, probeer opnieuw.';
 
@@ -125,10 +127,13 @@ app.controller('docentLoginCtrl', function ($scope, $location, socketIO) {
 		$scope.loginError = true;
 	});
 
+	$scope.$on('$destroy', function () {
+		socketIO.off('account-sign-in-success');
+		socketIO.off('account-sign-in-error');
+	});
 });
 
 app.controller('studentLoginCtrl', function ($scope, $location, socketIO) {
-
 	$scope.loginError = false;
 
 	$scope.loginStudent = function () {
@@ -145,6 +150,10 @@ app.controller('studentLoginCtrl', function ($scope, $location, socketIO) {
 	socketIO.on('player-sign-in-success', function (username) {
 		$scope.naam = username;
 		$location.path('/wachten');
+	});
+
+	$scope.$on('$destroy', function () {
+		socketIO.off('player-sign-in-success');
 	});
 });
 
@@ -341,7 +350,6 @@ app.controller('studentRanglijstCtrl', function ($rootScope, $scope, VarService)
  * Collecties controller
  */
 app.controller('collectiesCtrl', function ($rootScope, $scope, socketIO, VarService) {
-
 	socketIO.emit('get-collections', null, function (error) {
 		if (error) {
 			throw new Error(error.message);
@@ -353,6 +361,9 @@ app.controller('collectiesCtrl', function ($rootScope, $scope, socketIO, VarServ
 		VarService.collecties = receivedCollecties;
 	});
 
+	$scope.$on('$destroy', function () {
+		socketIO.off('collections-update');
+	});
 });
 
 /**
@@ -400,10 +411,13 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
 
 	$scope.openStudentLink = function () {
 		socketIO.emit('open-quiz');
-		socketIO.on('quiz-opened', function (quizID) {
-			$window.open('#/link/' + quizID);
-		});
 	};
+	socketIO.on('quiz-opened', function (quizID) {
+		$window.open('#/link/' + quizID);
+	});
+	$scope.$on('$destroy', function () {
+		socketIO.off('quiz-opened');
+	});
 
 	$scope.changeVisbility = function (index) {
 		if (VarService.collecties[$routeParams.id - 1].vragen[index].visible) {
@@ -466,6 +480,10 @@ app.controller('deelnemersCtrl', function ($rootScope, $scope, VarService, socke
 	socketIO.emit('get-deelnemers');
 	socketIO.on('deelnemers-update', function (deelnemers) {
 		$scope.deelnemers = deelnemers;
+	});
+
+	$scope.$on('$destroy', function () {
+		socketIO.off('deelnemers-update');
 	});
 });
 
