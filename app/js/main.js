@@ -228,10 +228,10 @@ app.controller('collectiesCtrl', function ($rootScope, $scope, socketIO, VarServ
 /**
  * Collecties controller
  */
-app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarService, $window, socketIO) {
-
-	if(!VarService.collecties){
+app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarService, $window, socketIO, $location) {
+	if (!VarService.collecties){
 		$location.path('/docent/login');
+		return;
 	}
 
 	$scope.id = $routeParams.id;
@@ -272,6 +272,9 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
 
 	$scope.openStudentLink = function () {
 		socketIO.emit('open-quiz');
+		socketIO.on('quiz-end', function () {
+			$location.path('/docent/collecties');
+		});
 	};
 
 	socketIO.on('quiz-opened', function (quizId) {
@@ -418,6 +421,11 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
  * Docent ranglijst controller
  */
 app.controller('docentRanglijstCtrl', function ($rootScope, $scope, $routeParams, VarService, socketIO) {
+	$scope.stopQuiz = function () {
+		var quizMaster = quizMasterController.get(socket);
+		quizMaster.activeQuiz.end();
+	};
+
 	socketIO.on('ranglijst', function (ranglijst) {
 		$scope.rangLijst = ranglijst;
 	});
