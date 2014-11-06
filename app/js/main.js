@@ -104,7 +104,8 @@ app.factory('VarService', function () {
 		vraagNr: 0,
 		rangLijst: null,
 		quizId: null,
-		collectieId: null
+		collectieId: null,
+		isLoggedIn: false
 	};
 });
 
@@ -114,7 +115,8 @@ app.controller('linkCtrl', function ($scope, $routeParams) {
 
 });
 
-app.controller('docentLoginCtrl', function ($scope, $location, socketIO) {
+app.controller('docentLoginCtrl', function ($scope, $location, socketIO, VarService) {
+
 	$scope.loginError = false;
 	$scope.loginMessage = 'De opgegeven gebruikersnaam of wachtwoord zijn niet correct, probeer opnieuw.';
 
@@ -127,18 +129,21 @@ app.controller('docentLoginCtrl', function ($scope, $location, socketIO) {
 
 	socketIO.on("account-sign-in-success", function (username) {
 		$scope.naam = username;
+		VarService.isLoggedIn = true;
 		$location.path('/docent/collecties');
 	});
 
 	socketIO.on("account-sign-in-error", function () {
 		$scope.password = '';
 		$scope.loginError = true;
+		VarService.isLoggedIn = false;
 	});
 
 	$scope.$on('$destroy', function () {
 		socketIO.off('account-sign-in-success');
 		socketIO.off('account-sign-in-error');
 	});
+
 });
 
 app.controller('studentLoginCtrl', function ($scope, $location, socketIO, $routeParams) {
@@ -165,12 +170,18 @@ app.controller('studentLoginCtrl', function ($scope, $location, socketIO, $route
 	$scope.$on('$destroy', function () {
 		socketIO.off('player-sign-in-success');
 	});
+
 });
 
 /**
  * Main controller, always initialized
  */
-app.controller('initCtrl', function ($scope, VarService) {
+app.controller('initCtrl', function ($scope, VarService, $location) {
+
+	if(!VarService.isLoggedIn){
+		$location.path('/');
+	}
+
 	VarService.rangLijst = [
 		{positie: 1, naam: 'Dwayne', score: '8/8'},
 		{positie: 2, naam: 'Martijn', score: '8/8'},
@@ -181,6 +192,7 @@ app.controller('initCtrl', function ($scope, VarService) {
 		{positie: 7, naam: 'Dwayne', score: '0/8'},
 		{positie: 8, naam: 'Martijn', score: '0/8'}
 	];
+
 });
 
 /**
@@ -208,7 +220,7 @@ app.controller('studentRanglijstCtrl', function ($rootScope, $scope, VarService)
 app.controller('collectiesCtrl', function ($rootScope, $scope, socketIO, VarService) {
 	socketIO.emit('get-collections', null, function (error) {
 		if (error) {
-			throw new Error(error.message);
+			console.log('ERROR: ' + error.message);
 		}
 	});
 
