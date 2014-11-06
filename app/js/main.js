@@ -108,7 +108,7 @@ app.factory('VarService', function () {
 });
 
 app.controller('linkCtrl', function ($scope, $routeParams) {
-	$scope.link =location.protocol + '//' + location.host + '/#/login/' + $routeParams.quizId;
+	$scope.link = location.protocol + '//' + location.host + '/#/login/' + $routeParams.quizId;
 	$scope.qrCode = 'https://chart.googleapis.com/chart?cht=qr&chs=500x500&chl=' + encodeURIComponent(location.protocol + '//' + location.host + '/#/login/' + $routeParams.quizId);
 
 });
@@ -143,7 +143,6 @@ app.controller('docentLoginCtrl', function ($scope, $location, socketIO) {
 app.controller('studentLoginCtrl', function ($scope, $location, socketIO, $routeParams) {
 
 	$scope.quizPass = $routeParams.quizPass;
-
 	$scope.loginError = false;
 
 	$scope.loginStudent = function () {
