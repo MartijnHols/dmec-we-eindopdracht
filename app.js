@@ -11,6 +11,8 @@ var io = socketio(httpServer);
 
 app.use('/', express.static(path.join(__dirname, 'app')));
 
+var maxVraagTijd = 10 * 1000; // in ms
+
 /**
  *
  * @param socket
@@ -35,6 +37,8 @@ function Quiz(id, quizMaster) {
 	this.quizMaster = quizMaster;
 	quizMaster.activeQuiz = this;
 	this.vragen = null;
+	this.vraagNr = null;
+	this.vraagStartTime = null;
 	this.players = {};
 	this.started = false;
 
@@ -70,11 +74,7 @@ function Quiz(id, quizMaster) {
 			throw new Error('De quiz kan niet gestart worden zonder vragen.');
 		}
 		this.started = true;
-		for (var socketId in this.players) {
-			var player = this.players[socketId];
-			player.socket.emit('nieuwe-vraag', this.vragen[0]);
-		}
-		this.quizMaster.socket.emit('nieuwe-vraag', this.vragen[0]);
+		this.nextQuestion();
 	};
 	/**
 	 * End the quiz, removing all players.
@@ -86,7 +86,32 @@ function Quiz(id, quizMaster) {
 		}
 		this.quizMaster.socket.emit('quiz-end', this.id);
 	};
+
+	this.nextQuestion = function () {
+		if (this.vraagStartTime && ((+new Date()) - this.vraagStartTime) < maxVraagTijd) {
+			throw {
+				name: "CurrentQuestionTimeError",
+				message: "De tijd voor de huidige vraag is nog niet op."
+			}
+		}
+		this.vraagNr = (!this.vraagNr) ? 0 : this.vraagNr + 1;
+		if (this.vraagNr === this.vragen.length) {
+			throw {
+				name: "NoMoreQuestionsError",
+				message: "Er zijn niet meer vragen."
+			};
+		}
+
+		for (var socketId in this.players) {
+			var player = this.players[socketId];
+			player.socket.emit('nieuwe-vraag', this.vragen[this.vraagNr]);
+		}
+		this.quizMaster.socket.emit('nieuwe-vraag', this.vragen[this.vraagNr]);
+
+		this.vraagStartTime = +new Date();
+	};
 }
+
 function Player(socket, naam, quiz) {
 	this.socket = socket;
 	this.naam = naam;
@@ -431,6 +456,21 @@ io.on("connection", function (socket) {
 		}
 
 		deelnemersUpdate(quizMasterController.get(socket));
+	});
+
+	socket.on('next-question', function (_, fn) {
+		if (!quizMasterController.isLoggedIn(socket)) {
+			return fn({message: 'Niet ingelogd.'});
+		}
+
+		var quizMaster = quizMasterController.get(socket);
+		var quiz = quizMaster.activeQuiz;
+		try {
+			quiz.nextQuestion();
+		}
+		catch (error) {
+			return fn(error);
+		}
 	});
 });
 

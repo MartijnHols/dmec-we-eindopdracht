@@ -378,8 +378,19 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
 	}
 
 	$scope.nextQuestion = function () {
-		//TODO: Voorkomen dat dit meerdere keren wordt uitgevoerd
-		socketIO.emit('next-question');
+		socketIO.emit('next-question', null, function (error) {
+			switch (error.name) {
+				case 'CurrentQuestionTimeError':
+					alert('Wacht tot de huidige vraag klaar is.');
+					return;
+				case 'NoMoreQuestionsError':
+					alert('Er zijn niet meer vragen.');
+					//TODO: naar vragen review gedeelte
+					return;
+				default:
+					return fn(error);
+			}
+		});
 	};
 
 	// Private functions
@@ -415,7 +426,6 @@ app.controller('docentVraagResultatenCtrl', function ($rootScope, $scope, $route
 
 	$scope.nextQuestion = function () {
 		if ($scope.vraagId == VarService.collecties[$scope.collectieId].vragen.length) {
-			console.log('test');
 			$location.path('/docent/ranglijst');
 		} else {
 			$scope.vraagId++;
@@ -429,7 +439,5 @@ app.controller('docentVraagResultatenCtrl', function ($rootScope, $scope, $route
  * Docent ranglijst controller
  */
 app.controller('docentRanglijstCtrl', function ($rootScope, $scope, $routeParams, VarService, $location) {
-
 	$scope.rangLijst = VarService.deelnemers;
-
 });
