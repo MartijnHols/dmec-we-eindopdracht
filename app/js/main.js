@@ -104,8 +104,7 @@ app.factory('VarService', function () {
 		vraagNr: 0,
 		rangLijst: null,
 		quizId: null,
-		collectieId: null,
-		isLoggedIn: false
+		collectieId: null
 	};
 });
 
@@ -382,8 +381,10 @@ app.controller('deelnemersCtrl', function ($rootScope, $scope, $location, VarSer
  * Docent vraag controller
  */
 app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, VarService, $location, socketIO) {
-	$scope.vraagNr = $routeParams.vraagNr;
-	$scope.vraag = $routeParams.vraag;
+	$scope.vraagNr = VarService.vraagNr;
+	$scope.vraag = VarService.vraag;
+
+	console.log($scope.vraag);
 
 	$scope.processTime = 10; // In seconds
 	$scope.processBar = 100;
