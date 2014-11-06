@@ -17,8 +17,9 @@ app.factory('socketIO', function ($rootScope) {
 	});
 	return {
 		on: function (eventName, callback) {
-			console.log(eventName);
+			console.log('bind "' + eventName + '"');
 			socket.on(eventName, function () {
+				console.log(eventName);
 				var args = arguments;
 				$rootScope.$apply(function () {
 					callback.apply(socket, args);

@@ -40,7 +40,6 @@ function Quiz(id, quizMaster) {
 
 	/**
 	 * Add a new player to this quiz.
-	 * @param socket
 	 * @param player
 	 */
 	this.addPlayer = function (player) {
@@ -51,7 +50,7 @@ function Quiz(id, quizMaster) {
 	};
 	/**
 	 * Remove the provided player from this quiz.
-	 * @param socketId
+	 * @param socket
 	 */
 	this.removePlayer = function (socket) {
 		delete this.players[socket.id];
@@ -63,7 +62,13 @@ function Quiz(id, quizMaster) {
 	this.getPlayer = function (socket) {
 		return this.players[socket.id];
 	};
+	/**
+	 * Start de quiz.
+	 */
 	this.start = function () {
+		if (vragen.length === 0) {
+			throw new Error('De quiz kan niet gestart worden zonder vragen.');
+		}
 		this.started = true;
 		for (var socketId in this.players) {
 			var player = this.players[socketId];
@@ -123,7 +128,6 @@ var quizMasterController = {
 		delete this.quizMastersOnline[socket.id];
 	},
 	isLoggedIn: function (socket) {
-		return true; //tijdelijk
 		return (this.quizMastersOnline[socket.id] !== undefined);
 	},
 	get: function (socket) {
@@ -401,30 +405,32 @@ io.on("connection", function (socket) {
 		quiz.addPlayer(player);
 		// Let quiz master know
 //		quiz.quizMaster.socket.emit('player-joined', player.naam);
-		quiz.quizMaster.socket.emit('deelnemers-update', deelnemersUpdate());
+		deelnemersUpdate(quiz.quizMaster);
 
 		socket.emit('player-sign-in-success');
 	});
 	//TODO: player-disconnect
-	socket.on('player-send-answer', function (options, fn) {
+	socket.on('player-send-answer', function (options) {
 		playerController.addAntwoord(socket, options.vraagId, options.antwoord);
 	});
 
-	function deelnemersUpdate() {
+	function deelnemersUpdate(quizMaster) {
 		console.log('deelnemersUpdate');
-		if (!quizMasterController.isLoggedIn(socket)) return fn({message:'Niet ingelogd.'});
 
-		var quizMaster = quizMasterController.get(socket);
 		var names = [];
 		for (var socketId in quizMaster.activeQuiz.players) {
 			var item = quizMaster.activeQuiz.players[socketId];
 			names.push({ naam: item.naam });
 		}
+
+		quizMaster.socket.emit('deelnemers-update', names);
 		return names;
 	}
 
-	socket.on('get-deelnemers', function () {
-		socket.emit('deelnemers-update', deelnemersUpdate());
+	socket.on('get-deelnemers', function (fn) {
+		if (!quizMasterController.isLoggedIn(socket)) return fn({message:'Niet ingelogd.'});
+
+		deelnemersUpdate(quizMasterController.get(socket));
 	});
 });
 
