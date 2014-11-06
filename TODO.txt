@@ -5,5 +5,4 @@
 
 
 # Dwayne
-- Foutmelding bij foutief inlog
 - Popup scherm moet ip adres ophalen

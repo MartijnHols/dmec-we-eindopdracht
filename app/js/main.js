@@ -49,7 +49,7 @@ app.factory('socketIO', function ($rootScope) {
  */
 app.config(['$routeProvider', function ($routeProvider) {
 	$routeProvider.when('/', {
-		templateUrl: 'templates/student/aanmelden.html',
+		templateUrl: 'templates/student/login.html',
 		controller: 'studentLoginCtrl'
 	}).when('/wachten', {
 		templateUrl: 'templates/student/wachten.html'
@@ -104,30 +104,41 @@ app.controller('linkCtrl', function ($scope, $routeParams) {
 });
 
 app.controller('docentLoginCtrl', function ($scope, $location, socketIO) {
+
+	$scope.loginError = false;
+	$scope.loginMessage = 'De opgegeven gebruikersnaam of wachtwoord zijn niet correct, probeer opnieuw.';
+
 	$scope.loginDocent = function () {
 		socketIO.emit("account-sign-in", {
 			username: $scope.username,
 			password: $scope.password
 		});
 	};
+
 	socketIO.on("account-sign-in-success", function (username) {
 		$scope.naam = username;
 		$location.path('/docent/collecties');
 	});
+
 	socketIO.on("account-sign-in-error", function () {
-		alert('Helaas. :( De opgevoerde gebruikersnaam en wachtwoord zijn niet correct.');
 		$scope.password = '';
+		$scope.loginError = true;
 	});
+
 });
 
 app.controller('studentLoginCtrl', function ($scope, $location, socketIO) {
+
+	$scope.loginError = false;
+
 	$scope.loginStudent = function () {
 		socketIO.emit('player-sign-in', {
 			naam: $scope.naam,
 			quizId: $scope.token
 		}, function (error) {
 			if (error) {
-				alert(error.message);
+				$scope.loginError = true;
+				$scope.loginMessage = error.message;
 			}
 		});
 	};

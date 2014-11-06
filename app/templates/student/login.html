@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-12">
-        <h1>Welkom docent</h1>
+        <h1>Welkom student</h1>
         <hr/>
     </div>
 </div>
@@ -11,18 +11,16 @@
             <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
             {{loginMessage}}
         </div>
-        <form method="post" ng-submit="loginDocent()">
+        <form method="post" ng-submit="loginStudent()">
             <div ng-class="loginError ? 'form-group has-error has-feedback' : 'form-group'">
                 <label class="control-label" for="naam">Naam</label>
-                <input type="text" class="form-control" id="naam" ng-model="username" placeholder="Naam">
+                <input type="text" class="form-control" id="naam" ng-model="naam" placeholder="Naam">
             </div>
             <div ng-class="loginError ? 'form-group has-error has-feedback' : 'form-group'">
-                <label class="control-label" for="password">Wachtwoord</label>
-                <input type="password" class="form-control" id="password" ng-model="password" placeholder="Wachtwoord">
+                <label class="control-label" for="token">Vul de code in die de docent heeft gegeven</label>
+                <input type="text" class="form-control" id="token" ng-model="token" placeholder="Quizcode">
             </div>
-            <button type="submit" class="pull-right btn btn-primary" ng-disabled="username.length==0||password.length==0||naam">Aanmelden</button>
-
-            <div ng-show="naam">Welkom, {{naam}}.</div>
+            <button type="submit" class="pull-right btn btn-primary">Aanmelden</button>
         </form>
     </div>
 </div>
