@@ -167,22 +167,6 @@ app.controller('studentLoginCtrl', function ($scope, $location, socketIO, $route
 });
 
 /**
- * Main controller, always initialized
- */
-app.controller('initCtrl', function ($scope, VarService, $location, $routeParams) {
-	VarService.rangLijst = [
-		{positie: 1, naam: 'Dwayne', score: '8/8'},
-		{positie: 2, naam: 'Martijn', score: '8/8'},
-		{positie: 3, naam: 'Dwayne', score: '7/8'},
-		{positie: 4, naam: 'Martijn', score: '6/8'},
-		{positie: 5, naam: 'Dwayne', score: '5/8'},
-		{positie: 6, naam: 'Martijn', score: '4/8'},
-		{positie: 7, naam: 'Dwayne', score: '0/8'},
-		{positie: 8, naam: 'Martijn', score: '0/8'}
-	];
-});
-
-/**
  * Studenten vraag controller
  */
 app.controller('studentVraagCtrl', function ($rootScope, $scope, $routeParams, VarService) {
@@ -401,6 +385,14 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
 			}
 		});
 	};
+	socketIO.on('ranglijst', function (ranglijst) {
+		VarService.rangLijst = ranglijst;
+		$location.path('/docent/ranglijst');
+	});
+
+	$scope.$on('$destroy', function () {
+		socketIO.off('ranglijst');
+	});
 
 	// Private functions
 	var updateBar = function () {
@@ -427,11 +419,5 @@ app.controller('docentRanglijstCtrl', function ($rootScope, $scope, $routeParams
 		quizMaster.activeQuiz.end();
 	};
 
-	socketIO.on('ranglijst', function (ranglijst) {
-		$scope.rangLijst = ranglijst;
-	});
-
-	$scope.$on('$destroy', function () {
-		socketIO.off('ranglijst');
-	});
+	$scope.rangLijst = VarService.rangLijst;
 });

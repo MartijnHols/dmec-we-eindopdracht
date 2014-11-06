@@ -128,22 +128,32 @@ function Quiz(id, quizMaster) {
 
 		this.vraagStartTime = +new Date();
 	};
-	this.stuurRanglijst = function () {
-		// Vind de max haalbare score
-		var maxScore = 0;
-		for (var i = 0, len = this.vragen.length; i < len; i++) {
-			var vraag = this.vragen[i];
 
-			// Vind de max score die bij deze vraag te halen valt
-			var maxAntwoordScore = 0;
-			for (var j = 0, antwoordenLen = vraag.antwoorden.length; j < antwoordenLen; j++) {
-				var antwoord = vraag.antwoorden[j];
-				if (vraag.score > maxAntwoordScore) {
-					maxAntwoordScore = vraag.score;
-				}
-			}
-			maxScore += maxAntwoordScore;
+	function getMaxScore(vragen) {
+		var maxScore = 0;
+		for (var key in vragen) {
+			var vraag = vragen[key];
+
+			maxScore += getMaxScoreVanVraag(vraag);
 		}
+
+		return maxScore;
+	}
+	function getMaxScoreVanVraag(vraag) {
+		// Vind de max score die bij deze vraag te halen valt
+		var maxAntwoordScore = 0;
+		for (var key in vraag.antwoorden) {
+			var antwoord = vraag.antwoorden[key];
+			if (antwoord.score > maxAntwoordScore) {
+				maxAntwoordScore = antwoord.score;
+			}
+		}
+
+		return maxAntwoordScore;
+	}
+
+	this.stuurRanglijst = function () {
+		var maxScore = getMaxScore(this.vragen);
 
 		var ranglijst = [];
 		for (var socketId in this.players) {
