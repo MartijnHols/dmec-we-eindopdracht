@@ -80,9 +80,6 @@ app.config(['$routeProvider', function ($routeProvider) {
 	}).when('/docent/vraag/:vraagId', {
 		templateUrl: 'templates/docent/vraag.html',
 		controller: 'docentVraagCtrl'
-	}).when('/docent/vraag-resulaten/:vraagId', {
-		templateUrl: 'templates/docent/vraag-resulaten.html',
-		controller: 'docentVraagResultatenCtrl'
 	}).when('/docent/ranglijst', {
 		templateUrl: 'templates/docent/ranglijst.html',
 		controller: 'docentRanglijstCtrl'
@@ -116,7 +113,6 @@ app.controller('linkCtrl', function ($scope, $routeParams) {
 });
 
 app.controller('docentLoginCtrl', function ($scope, $location, socketIO, VarService) {
-
 	$scope.loginError = false;
 	$scope.loginMessage = 'De opgegeven gebruikersnaam of wachtwoord zijn niet correct, probeer opnieuw.';
 
@@ -143,11 +139,9 @@ app.controller('docentLoginCtrl', function ($scope, $location, socketIO, VarServ
 		socketIO.off('account-sign-in-success');
 		socketIO.off('account-sign-in-error');
 	});
-
 });
 
 app.controller('studentLoginCtrl', function ($scope, $location, socketIO, $routeParams) {
-
 	$scope.quizPass = $routeParams.quizPass;
 	$scope.loginError = false;
 
@@ -170,14 +164,12 @@ app.controller('studentLoginCtrl', function ($scope, $location, socketIO, $route
 	$scope.$on('$destroy', function () {
 		socketIO.off('player-sign-in-success');
 	});
-
 });
 
 /**
  * Main controller, always initialized
  */
 app.controller('initCtrl', function ($scope, VarService, $location) {
-
 	if(!VarService.isLoggedIn){
 		$location.path('/');
 	}
@@ -192,7 +184,6 @@ app.controller('initCtrl', function ($scope, VarService, $location) {
 		{positie: 7, naam: 'Dwayne', score: '0/8'},
 		{positie: 8, naam: 'Martijn', score: '0/8'}
 	];
-
 });
 
 /**
@@ -395,10 +386,6 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
 				case 'CurrentQuestionTimeError':
 					alert('Wacht tot de huidige vraag klaar is.');
 					return;
-				case 'NoMoreQuestionsError':
-					alert('Er zijn niet meer vragen.');
-					//TODO: naar vragen review gedeelte
-					return;
 				default:
 					return fn(error);
 			}
@@ -419,32 +406,6 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
 	};
 
 	setInterval(updateBar, 100);
-});
-
-/**
- * Docent vraag resultaten controller
- */
-app.controller('docentVraagResultatenCtrl', function ($rootScope, $scope, $routeParams, VarService, $location) {
-	$scope.collectieId = $routeParams.collectieId;
-	$scope.vraagId = $routeParams.vraagId;
-	$scope.antwoorden = VarService.collecties[$scope.collectieId].vragen[$scope.vraagId - 1].antwoorden;
-	$scope.vraag = VarService.collecties[$scope.collectieId].vragen[$scope.vraagId - 1].vraag;
-
-	if ($scope.vraagId == VarService.collecties[$scope.collectieId].vragen.length) {
-		$scope.nextButtonText = 'Bekijk resulaten';
-	} else {
-		$scope.nextButtonText = 'Volgende vraag';
-	}
-
-	$scope.nextQuestion = function () {
-		if ($scope.vraagId == VarService.collecties[$scope.collectieId].vragen.length) {
-			$location.path('/docent/ranglijst');
-		} else {
-			$scope.vraagId++;
-			$location.path('/docent/vraag-resulaten/' + $scope.vraagId);
-		}
-	};
-
 });
 
 /**

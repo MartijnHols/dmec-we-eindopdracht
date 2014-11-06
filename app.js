@@ -25,8 +25,14 @@ function QuizMaster(socket, name) {
 	this.name = name;
 	this.activeQuiz = null;
 }
+
+var QuizFase = {
+	Open: 1,
+	Vragen: 2,
+	Ranglijst: 3
+};
+
 /**
- *
  * @param id string
  * @param quizMaster QuizMaster
  * @param vragen object[]
@@ -36,18 +42,20 @@ function Quiz(id, quizMaster) {
 	this.id = id;
 	this.quizMaster = quizMaster;
 	quizMaster.activeQuiz = this;
+	this.players = {};
+
+	// Gestarte quizes
 	this.vragen = null;
 	this.vraagNr = null;
 	this.vraagStartTime = null;
-	this.players = {};
-	this.started = false;
+	this.fase = QuizFase.Open; // standaard
 
 	/**
 	 * Add a new player to this quiz.
 	 * @param player
 	 */
 	this.addPlayer = function (player) {
-		if (this.started) {
+		if (this.fase !== QuizFase.Open) {
 			throw new Error('De quiz is al gestart: aanmelden is niet meer mogelijk.');
 		}
 		this.players[player.socket.id] = player;
@@ -73,7 +81,7 @@ function Quiz(id, quizMaster) {
 		if (this.vragen.length === 0) {
 			throw new Error('De quiz kan niet gestart worden zonder vragen.');
 		}
-		this.started = true;
+		this.fase = QuizFase.Vragen;
 		this.nextQuestion();
 	};
 	/**
@@ -102,13 +110,32 @@ function Quiz(id, quizMaster) {
 			};
 		}
 
+		var vraagInfo = {
+			vraagNr: this.vraagNr,
+			aantalVragen: this.vragen.length,
+			vraag: this.vragen[this.vraagNr]
+		};
+
 		for (var socketId in this.players) {
 			var player = this.players[socketId];
-			player.socket.emit('nieuwe-vraag', this.vragen[this.vraagNr]);
+			player.socket.emit('nieuwe-vraag', vraagInfo);
 		}
-		this.quizMaster.socket.emit('nieuwe-vraag', this.vragen[this.vraagNr]);
+		this.quizMaster.socket.emit('nieuwe-vraag', vraagInfo);
 
 		this.vraagStartTime = +new Date();
+	};
+	this.stuurRanglijst = function () {
+//		this.vragen = null;
+//		this.vraagNr = null;
+//		this.vraagStartTime = null;
+
+		var ranglijst;
+
+		for (var socketId in this.players) {
+			var player = this.players[socketId];
+			player.socket.emit('ranglijst', ranglijst);
+		}
+		this.quizMaster.socket.emit('ranglijst', ranglijst);
 	};
 }
 
@@ -469,7 +496,13 @@ io.on("connection", function (socket) {
 			quiz.nextQuestion();
 		}
 		catch (error) {
-			return fn(error);
+			switch (error.name) {
+				case 'NoMoreQuestionsError':
+
+					break;
+				default:
+					return fn(error);
+			}
 		}
 	});
 });
