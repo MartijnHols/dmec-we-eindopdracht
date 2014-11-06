@@ -373,9 +373,8 @@ app.controller('deelnemersCtrl', function ($rootScope, $scope, $location, VarSer
  */
 app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, VarService, $location, socketIO) {
 	$scope.vraagNr = VarService.vraagNr;
-	$scope.vraag = VarService.vraag;
-
-	console.log($scope.vraag);
+	$scope.vraag = VarService.vraag.vraag;
+	$scope.antwoorden = VarService.vraag.antwoorden;
 
 	$scope.processTime = 10; // In seconds
 	$scope.processBar = 100;
@@ -394,7 +393,7 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
 					alert('Wacht tot de huidige vraag klaar is.');
 					return;
 				default:
-					return fn(error);
+					throw error;
 			}
 		});
 	};
