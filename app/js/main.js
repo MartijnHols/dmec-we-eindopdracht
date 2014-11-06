@@ -162,6 +162,7 @@ app.controller('studentLoginCtrl', function ($scope, $location, socketIO, $route
 			}
 		});
 	};
+
 	socketIO.on('player-sign-in-success', function (username) {
 		$scope.naam = username;
 		$location.path('/wachten');
@@ -176,11 +177,7 @@ app.controller('studentLoginCtrl', function ($scope, $location, socketIO, $route
 /**
  * Main controller, always initialized
  */
-app.controller('initCtrl', function ($scope, VarService, $location) {
-
-	if(!VarService.isLoggedIn){
-		$location.path('/');
-	}
+app.controller('initCtrl', function ($scope, VarService, $location, $routeParams) {
 
 	VarService.rangLijst = [
 		{positie: 1, naam: 'Dwayne', score: '8/8'},
@@ -220,7 +217,11 @@ app.controller('studentRanglijstCtrl', function ($rootScope, $scope, VarService)
 app.controller('collectiesCtrl', function ($rootScope, $scope, socketIO, VarService) {
 	socketIO.emit('get-collections', null, function (error) {
 		if (error) {
-			console.log('ERROR: ' + error.message);
+			if(error.message == 'Niet ingelogd'){
+				$location.path('/');
+				return;
+			}
+			throw new Error(error.message);
 		}
 	});
 
@@ -238,6 +239,11 @@ app.controller('collectiesCtrl', function ($rootScope, $scope, socketIO, VarServ
  * Collecties controller
  */
 app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarService, $window, socketIO) {
+
+	if(!VarService.collecties){
+		$location.path('/docent/login');
+	}
+
 	$scope.id = $routeParams.id;
 	VarService.collectieId = $routeParams.id;
 	$scope.newQuestion = false;
