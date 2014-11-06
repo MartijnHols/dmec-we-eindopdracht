@@ -54,6 +54,9 @@ app.config(['$routeProvider', function ($routeProvider) {
 	$routeProvider.when('/', {
 		templateUrl: 'templates/student/login.html',
 		controller: 'studentLoginCtrl'
+	}).when('/login/:quizPass', {
+		templateUrl: 'templates/student/login.html',
+		controller: 'studentLoginCtrl'
 	}).when('/wachten', {
 		templateUrl: 'templates/student/wachten.html'
 	}).when('/vraag/:vraagNummer', {
@@ -105,7 +108,9 @@ app.factory('VarService', function () {
 });
 
 app.controller('linkCtrl', function ($scope, $routeParams) {
-	$scope.link = location.protocol + '//' + location.host + '/#/login/' + $routeParams.quizId;
+	$scope.link =location.protocol + '//' + location.host + '/#/login/' + $routeParams.quizId;
+	$scope.qrCode = 'https://chart.googleapis.com/chart?cht=qr&chs=500x500&chl=' + encodeURIComponent(location.protocol + '//' + location.host + '/#/login/' + $routeParams.quizId);
+
 });
 
 app.controller('docentLoginCtrl', function ($scope, $location, socketIO) {
@@ -135,7 +140,10 @@ app.controller('docentLoginCtrl', function ($scope, $location, socketIO) {
 	});
 });
 
-app.controller('studentLoginCtrl', function ($scope, $location, socketIO) {
+app.controller('studentLoginCtrl', function ($scope, $location, socketIO, $routeParams) {
+
+	$scope.quizPass = $routeParams.quizPass;
+
 	$scope.loginError = false;
 
 	$scope.loginStudent = function () {
