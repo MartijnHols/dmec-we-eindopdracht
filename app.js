@@ -102,8 +102,12 @@ function Quiz(id, quizMaster) {
 				message: "De tijd voor de huidige vraag is nog niet op."
 			}
 		}
-		this.vraagNr = (!this.vraagNr) ? 0 : this.vraagNr + 1;
-		if (this.vraagNr === this.vragen.length) {
+		if (this.vraagNr === null) {
+			this.vraagNr = 1;
+		} else {
+			this.vraagNr++;
+		}
+		if (this.vraagNr > this.vragen.length) {
 			throw {
 				name: "NoMoreQuestionsError",
 				message: "Er zijn niet meer vragen."
@@ -113,7 +117,7 @@ function Quiz(id, quizMaster) {
 		var vraagInfo = {
 			vraagNr: this.vraagNr,
 			aantalVragen: this.vragen.length,
-			vraag: this.vragen[this.vraagNr]
+			vraag: this.vragen[(this.vraagNr - 1)]
 		};
 
 		for (var socketId in this.players) {
@@ -520,7 +524,7 @@ io.on("connection", function (socket) {
 		catch (error) {
 			switch (error.name) {
 				case 'NoMoreQuestionsError':
-
+					quiz.stuurRanglijst();
 					break;
 				default:
 					return fn(error);

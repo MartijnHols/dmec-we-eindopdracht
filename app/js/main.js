@@ -358,6 +358,7 @@ app.controller('deelnemersCtrl', function ($rootScope, $scope, $location, VarSer
 		});
 	};
 	socketIO.on('nieuwe-vraag', function (options) {
+		console.log('Vraag #' + options.vraagNr + ' ontvangen: ' + options.vraag.vraag, options);
 		VarService.vraagNr = options.vraagNr;
 		VarService.aantalVragen = options.aantalVragen;
 		VarService.vraag = options.vraag;
