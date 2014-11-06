@@ -7,13 +7,17 @@
 
 <div class="row">
     <div class="col-md-offset-3 col-md-6">
+        <div ng-show="loginError" class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            {{loginMessage}}
+        </div>
         <form method="post" ng-submit="loginDocent()">
-            <div class="form-group">
-                <label for="naam">Naam</label>
+            <div ng-class="loginError ? 'form-group has-error has-feedback' : 'form-group'">
+                <label class="control-label" for="naam">Naam</label>
                 <input type="text" class="form-control" id="naam" ng-model="username" placeholder="Naam">
             </div>
-            <div class="form-group">
-                <label for="password">Wachtwoord</label>
+            <div ng-class="loginError ? 'form-group has-error has-feedback' : 'form-group'">
+                <label class="control-label" for="password">Wachtwoord</label>
                 <input type="password" class="form-control" id="password" ng-model="password" placeholder="Wachtwoord">
             </div>
             <button type="submit" class="pull-right btn btn-primary" ng-disabled="username.length==0||password.length==0||naam">Aanmelden</button>
