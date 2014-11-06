@@ -80,8 +80,9 @@ app.config(['$routeProvider', function ($routeProvider) {
 	}).when('/docent/ranglijst', {
 		templateUrl: 'templates/docent/ranglijst.html',
 		controller: 'docentRanglijstCtrl'
-	}).when('/link', {
-		templateUrl: 'templates/docent/link.html'
+	}).when('/link/:quizId', {
+		templateUrl: 'templates/docent/link.html',
+		controller: 'linkCtrl'
 	}).otherwise({
 		redirectTo: '/'
 	});
@@ -96,6 +97,10 @@ app.factory('VarService', function () {
 		vragen: null,
 		rangLijst: null
 	};
+});
+
+app.controller('linkCtrl', function ($scope, $routeParams) {
+	$scope.link = location.protocol + '//' + location.host + '/#/login/' + $routeParams.quizId;
 });
 
 app.controller('docentLoginCtrl', function ($scope, $location, socketIO) {
@@ -383,8 +388,10 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
 	};
 
 	$scope.openStudentLink = function () {
-		$window.open('#/link');
 		socketIO.emit('open-quiz');
+		socketIO.on('quiz-opened', function (quizID) {
+			$window.open('#/link/' + quizID);
+		});
 	};
 
 	$scope.changeVisbility = function (index) {

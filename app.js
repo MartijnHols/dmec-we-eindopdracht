@@ -382,6 +382,7 @@ io.on("connection", function (socket) {
 		var quizMaster = quizMasterController.get(socket);
 		var quizId = quizController.openQuiz(quizMaster);
 		console.log(quizId);
+		socket.emit('quiz-opened', quizId);
 	});
 	socket.on('start-quiz', function (options, fn) {
 		if (!quizMasterController.isLoggedIn(socket)) return fn({message:'Niet ingelogd.'});
