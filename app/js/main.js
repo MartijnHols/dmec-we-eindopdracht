@@ -49,7 +49,7 @@ app.factory('socketIO', function ($rootScope) {
  */
 app.config(['$routeProvider', function ($routeProvider) {
 	$routeProvider.when('/', {
-		templateUrl: 'templates/student/aanmelden.html',
+		templateUrl: 'templates/student/login.html',
 		controller: 'studentLoginCtrl'
 	}).when('/wachten', {
 		templateUrl: 'templates/student/wachten.html'
@@ -123,13 +123,17 @@ app.controller('docentLoginCtrl', function ($scope, $location, socketIO) {
 });
 
 app.controller('studentLoginCtrl', function ($scope, $location, socketIO) {
+
+	$scope.loginError = false;
+
 	$scope.loginStudent = function () {
 		socketIO.emit('player-sign-in', {
 			naam: $scope.naam,
 			quizId: $scope.token
 		}, function (error) {
 			if (error) {
-				alert(error.message);
+				$scope.loginError = true;
+				$scope.loginMessage = error.message;
 			}
 		});
 	};

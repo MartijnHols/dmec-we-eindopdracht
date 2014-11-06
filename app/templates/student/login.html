@@ -1,0 +1,26 @@
+<div class="row">
+    <div class="col-md-12">
+        <h1>Welkom student</h1>
+        <hr/>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-offset-3 col-md-6">
+        <div ng-show="loginError" class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            {{loginMessage}}
+        </div>
+        <form method="post" ng-submit="loginStudent()">
+            <div ng-class="loginError ? 'form-group has-error has-feedback' : 'form-group'">
+                <label class="control-label" for="naam">Naam</label>
+                <input type="text" class="form-control" id="naam" ng-model="naam" placeholder="Naam">
+            </div>
+            <div ng-class="loginError ? 'form-group has-error has-feedback' : 'form-group'">
+                <label class="control-label" for="token">Vul de code in die de docent heeft gegeven</label>
+                <input type="text" class="form-control" id="token" ng-model="token" placeholder="Quizcode">
+            </div>
+            <button type="submit" class="pull-right btn btn-primary">Aanmelden</button>
+        </form>
+    </div>
+</div>
