@@ -4,6 +4,10 @@ var express = require('express');
 var path = require('path');
 var http = require('http');
 var socketio = require('socket.io');
+var mongojs = require('mongojs');
+
+var connectionString = '127.0.0.1/kwizles',
+	db = mongojs(connectionString, ['ranglijst']);
 
 var app = express();
 var httpServer = http.Server(app);
@@ -197,6 +201,10 @@ function Quiz(id, quizMaster) {
 			player.socket.emit('ranglijst', ranglijst);
 		}
 		this.quizMaster.socket.emit('ranglijst', ranglijst);
+
+		this.fase = QuizFase.Ranglijst;
+
+		db.ranglijst.save({created: new Date(), ranglijst: ranglijst});
 	};
 }
 
