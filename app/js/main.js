@@ -187,10 +187,6 @@ app.controller('studentLoginCtrl', function ($scope, $location, socketIO, $route
  * Studenten vraag controller
  */
 app.controller('studentVraagCtrl', function ($rootScope, $scope, $routeParams, VarService) {
-	/**
-	 * TODO: Hier moet nog een controle komen op welke collectie gekozen is door
-	 * de leraar.
-	 */
 	$scope.vraagNummer = $routeParams.vraagNummer;
 	$scope.vraag = VarService.vraag;
 });
@@ -205,11 +201,11 @@ app.controller('studentRanglijstCtrl', function ($rootScope, $scope, VarService)
 /**
  * Collecties controller
  */
-app.controller('collectiesCtrl', function ($rootScope, $scope, socketIO, VarService) {
+app.controller('collectiesCtrl', function ($rootScope, $scope, socketIO, VarService, $location) {
 	socketIO.emit('get-collections', null, function (error) {
 		if (error) {
 			if(error.message == 'Niet ingelogd'){
-				$location.path('/');
+				$location.path('/docent');
 				return;
 			}
 			throw new Error(error.message);
@@ -230,8 +226,8 @@ app.controller('collectiesCtrl', function ($rootScope, $scope, socketIO, VarServ
  * Collecties controller
  */
 app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarService, $window, socketIO, $location) {
-	if (!VarService.collecties){
-		$location.path('/docent/login');
+	if (!VarService.collecties) {
+		$location.path('/docent');
 		return;
 	}
 
@@ -340,7 +336,15 @@ var docentEventsBound = false;
  * Deelnemers controller
  */
 app.controller('deelnemersCtrl', function ($rootScope, $scope, $location, VarService, socketIO) {
-	socketIO.emit('get-deelnemers');
+	socketIO.emit('get-deelnemers', null, function (error) {
+		if (error) {
+			if(error.message == 'Niet ingelogd'){
+				$location.path('/docent');
+				return;
+			}
+			throw new Error(error.message);
+		}
+	});
 	socketIO.on('deelnemers-update', function (deelnemers) {
 		$scope.deelnemers = deelnemers;
 	});

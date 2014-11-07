@@ -121,6 +121,13 @@ function Quiz(id, quizMaster) {
 			aantalVragen: this.vragen.length,
 			vraag: this.vragen[(this.vraagNr - 1)]
 		};
+		//TODO: Implement below
+		//		// Clone vraag om de antwoord scores weg te halen voor spelers (geen valsspelers)
+		//		var playerVraagInfo = JSON.parse(JSON.stringify(vraagInfo));
+		//		for (var key in playerVraagInfo.vraag.antwoorden) {
+		//			var antwoord = playerVraagInfo.vraag.antwoorden[key];
+		//			delete antwoord.score;
+		//		}
 
 		for (var socketId in this.players) {
 			var player = this.players[socketId];
@@ -141,6 +148,7 @@ function Quiz(id, quizMaster) {
 
 		return maxScore;
 	}
+
 	function getMaxScoreVanVraag(vraag) {
 		// Vind de max score die bij deze vraag te halen valt
 		var maxAntwoordScore = 0;
@@ -535,8 +543,7 @@ io.on("connection", function (socket) {
 		var quiz = quizMaster.activeQuiz;
 		try {
 			quiz.nextQuestion();
-		}
-		catch (error) {
+		} catch (error) {
 			switch (error.name) {
 				case 'NoMoreQuestionsError':
 					quiz.stuurRanglijst();
