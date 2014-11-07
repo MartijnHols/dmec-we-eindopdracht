@@ -515,13 +515,13 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
 /**
  * Docent ranglijst controller
  */
-app.controller('docentRanglijstCtrl', function ($rootScope, $scope, $routeParams, VarService, $location) {
+app.controller('docentRanglijstCtrl', function ($rootScope, $scope, $routeParams, VarService, $location, socketIO) {
 	if (!VarService.rangLijst) {
 		$location.path('/docent');
 		return;
 	}
 	$scope.stopQuiz = function () {
-		socket.emit('end-quiz', null, function (error) {
+		socketIO.emit('end-quiz', null, function (error) {
 			if (error) {
 				throw error;
 			}
