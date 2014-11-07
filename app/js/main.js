@@ -194,26 +194,21 @@ app.controller('studentVraagCtrl', function ($rootScope, $scope, $routeParams, V
 	}
     $scope.vraagNummer = VarService.vraagNr;
     $scope.vraag = VarService.vraag;
-
-    $scope.processTime = 10; // In seconds
-    $scope.processBar = 100;
+    $scope.selected = 0;
     $scope.processTimeUp = false;
 
-    // Private functions
-    randomSort = function(vraag) {
-        return Math.random();
-    };
-
-    var updateBar = function () {
-        $scope.$apply(function () {
-            if ($scope.processTime >= 0) {
-                var tmp_var = ($scope.processTime * 1000) / 100;
-                $scope.processBar = tmp_var;
-                $scope.processTime -= 0.1;
-            } else {
-                $scope.processTimeUp = true;
-            }
-        });
+    $scope.selecteerAntwoord = function (antwoord, index) {
+        if (!$scope.processTimeUp) {
+            socketIO.emit('stuur-antwoord', {
+                vraagId: VarService.vraag.id,
+                antwoord: antwoord
+            }, function (error) {
+                if (error) {
+                    throw new Error(error.message);
+                    //TODO: Als tijd is verstreken een nette foutmelding geven en niet overgeven
+                }
+            });
+        }
     };
 
     setInterval(updateBar, 100);
@@ -234,7 +229,9 @@ app.controller('studentVraagCtrl', function ($rootScope, $scope, $routeParams, V
 			}
 		});
 	}, 100);
-
+    $scope.randomSort = function(vraag) {
+        return Math.random();
+    };
 });
 
 /**
