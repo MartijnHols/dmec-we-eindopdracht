@@ -199,6 +199,7 @@ app.controller('studentVraagCtrl', function ($rootScope, $scope, $routeParams, V
 		}, function (error) {
 			if (error) {
 				throw new Error(error.message);
+				//TODO: Als tijd is verstreken een nette foutmelding geven en niet overgeven
 			}
 		});
 	};
@@ -375,7 +376,8 @@ app.controller('deelnemersCtrl', function ($rootScope, $scope, $location, VarSer
 		}
 	});
 	socketIO.on('deelnemers-update', function (deelnemers) {
-		$scope.deelnemers = deelnemers;
+		VarService.deelnemers = deelnemers;
+		$scope.deelnemers = VarService.deelnemers;
 	});
 
 	$scope.startQuiz = function () {
@@ -420,7 +422,16 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
 	}
 	$scope.vraagNr = VarService.vraagNr;
 	$scope.vraag = VarService.vraag;
-	$scope.deelnemerSelecties = {};
+	$scope.vraag = VarService.vraag;
+	$scope.deelnemerKeuzes = [];
+	for (var key in VarService.deelnemers) {
+		var deelnemer = VarService.deelnemers[key];
+		$scope.deelnemerKeuzes.push({
+			socketId: deelnemer.socketId,
+			naam: deelnemer.naam,
+			antwoord: null
+		});
+	}
 
 	$scope.processTime = 10; // In seconds
 	$scope.processBar = 100;
@@ -448,11 +459,12 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
 		$location.path('/docent/ranglijst');
 	});
 	socketIO.on('antwoord-geselecteerd', function (options) {
-		var player = options.player;
-		$scope.deelnemerSelecties[player.socket.id] = {
-			player: player,
-			antwoord: options.antwoord
-		};
+		for (var key in $scope.deelnemerKeuzes) {
+			var deelnemerKeuze = $scope.deelnemerKeuzes[key];
+			if (deelnemerKeuze.socketId === options.socketId) {
+				deelnemerKeuze.antwoord = options.antwoord;
+			}
+		}
 	});
 
 	$scope.$on('$destroy', function () {
