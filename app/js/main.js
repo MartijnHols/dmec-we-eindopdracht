@@ -142,7 +142,7 @@ app.controller('docentLoginCtrl', function ($scope, $location, socketIO, VarServ
 
 var studentEventsBound = false;
 app.controller('studentLoginCtrl', function ($scope, $location, socketIO, $routeParams, VarService) {
-    $scope.quizPass = $routeParams.quizPass;
+    $scope.token = $routeParams.quizPass;
     $scope.loginError = false;
 
     $scope.loginStudent = function () {
@@ -197,10 +197,8 @@ app.controller('studentVraagCtrl', function ($rootScope, $scope, $routeParams, V
     $scope.processTime = 10; // In seconds
     $scope.processBar = 100;
     $scope.processTimeUp = false;
-    $scope.selected = 0;
 
     $scope.selecteerAntwoord = function (antwoord, index) {
-        $scope.selected = index;
         if (!$scope.processTimeUp) {
             socketIO.emit('stuur-antwoord', {
                 vraagId: VarService.vraag.id,
@@ -215,6 +213,10 @@ app.controller('studentVraagCtrl', function ($rootScope, $scope, $routeParams, V
     };
 
     // Private functions
+    randomSort = function(vraag) {
+        return Math.random();
+    };
+
     var updateBar = function () {
         $scope.$apply(function () {
             if ($scope.processTime >= 0) {

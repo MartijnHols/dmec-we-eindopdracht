@@ -18,13 +18,22 @@
 <div class="row">
     <div class="col-md-12">
         <h4>{{vraag.vraag}}</h4>
+        <div class="list-group">
+            <a href="#" class="list-group-item active">
+                Cras justo odio
+            </a>
+            <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
+            <a href="#" class="list-group-item">Morbi leo risus</a>
+            <a href="#" class="list-group-item">Porta ac consectetur ac</a>
+            <a href="#" class="list-group-item">Vestibulum at eros</a>
+        </div>
     </div>
 </div>
 
 <div class="row">
     <div class="col-md-12">
         <div class="list-group">
-            <a class="list-group-item" ng-class="processTimeUp ? 'disabled' : '', active: $index == selected}" ng-repeat="antwoord in vraag.antwoorden" ng-click="selecteerAntwoord(antwoord, $index)">{{antwoord.antwoord}}</a>
+            <a class="list-group-item" ng-class="processTimeUp ? 'disabled' : ''" ng-repeat="antwoord in vraag.antwoorden" ng-click="selecteerAntwoord(antwoord, $index)">{{antwoord.antwoord}}</a>
         </div>
     </div>
 </div>
@@ -36,3 +45,12 @@
         cursor: not-allowed;
     }
 </style>
+<script>
+    $( document ).ready(function() {
+        $(".list-group-item").click(function(){
+            $(".list-group-item").removeClass("active");
+            $(this).addClass("active");
+            return false;
+        });
+    });
+</script>

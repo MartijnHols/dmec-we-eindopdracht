@@ -6,5 +6,4 @@
 
 # Dwayne
 - fix vragen
-- bug zet quizcode in password veld, werkte eerst wel
 - vragen random
