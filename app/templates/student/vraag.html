@@ -12,18 +12,17 @@
                  aria-valuemax="100" style="width: {{processBar}}%">
             </div>
         </div>
-        <!--TODO: deze progress bar werkt niet-->
     </div>
 </div>
 
 <div class="row">
-    <div class="col-md-9">
+    <div class="col-md-12">
         <h4>{{vraag.vraag}}</h4>
     </div>
 </div>
 
 <div class="row">
-    <div class="col-md-9">
+    <div class="col-md-12">
         <div class="list-group">
             <!--TODO: Het geselecteerde antwoord markeren, cursor:pointer hierop zetten, opmaak -->
             <a ng-repeat="antwoord in vraag.antwoorden" ng-click="selecteerAntwoord(antwoord)"
