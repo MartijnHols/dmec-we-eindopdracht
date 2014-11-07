@@ -223,6 +223,7 @@ app.controller('studentVraagCtrl', function ($rootScope, $scope, $routeParams, V
 				$scope.processBar = (timeLeft * 1000) / 100;
 			} else {
 				clearInterval(tmrProgressBar);
+				$scope.processTimeUp = true;
 			}
 		});
 	}, 100);
