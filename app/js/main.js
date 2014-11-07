@@ -187,16 +187,13 @@ app.controller('studentLoginCtrl', function ($scope, $location, socketIO, $route
 /**
  * Studenten vraag controller
  */
-app.controller('studentVraagCtrl', function ($rootScope, $scope, $routeParams, VarService, socketIO) {
+app.controller('studentVraagCtrl', function ($rootScope, $scope, $routeParams, VarService, socketIO, $location) {
 	if (!VarService.vraag) {
-		$location.path('/')
+		$location.path('/');
 		return;
 	}
     $scope.vraagNummer = VarService.vraagNr;
     $scope.vraag = VarService.vraag;
-    $scope.processTime = 10; // In seconds
-    $scope.processBar = 100;
-    $scope.processTimeUp = false;
     $scope.selected = 0;
 
     $scope.selecteerAntwoord = function (antwoord, index) {
@@ -214,21 +211,21 @@ app.controller('studentVraagCtrl', function ($rootScope, $scope, $routeParams, V
         }
     };
 
-    // Private functions
-    var updateBar = function () {
-        $scope.$apply(function () {
-            if ($scope.processTime >= 0) {
-                var tmp_var = ($scope.processTime * 1000) / 100;
-                $scope.processBar = tmp_var;
-                $scope.processTime -= 0.1;
-            } else {
-                $scope.processTimeUp = true;
-            }
-        });
-    };
-
-    setInterval(updateBar, 100);
-
+	var questionStart = +new Date();
+	var questionTime = 10;
+	$scope.processBar = 100;
+	var tmrProgressBar = setInterval(function () {
+		$scope.$apply(function () {
+			var now = +new Date();
+			var timePassed = (now - questionStart) / 1000;
+			var timeLeft = questionTime - timePassed;
+			if (timePassed < questionTime) {
+				$scope.processBar = (timeLeft * 1000) / 100;
+			} else {
+				clearInterval(tmrProgressBar);
+			}
+		});
+	}, 100);
 });
 
 /**
@@ -399,7 +396,6 @@ app.controller('deelnemersCtrl', function ($rootScope, $scope, $location, VarSer
 			quizId: VarService.quizId,
 			vragen: geselecteerdeVragen
 		}, function (error) {
-			console.log(arguments)
 			if (error) {
 				alert(error.message);
 			}
@@ -444,10 +440,6 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
 		});
 	}
 
-	$scope.processTime = 10; // In seconds
-	$scope.processBar = 100;
-	$scope.nextButton = false;
-
 	if ($scope.vraagNr == VarService.aantalVragen) { // vraagNr telling begint bij 1 i.p.v. 0 dus dit hoort te werken
 		$scope.nextButtonText = 'Bekijk resulaten';
 	} else {
@@ -483,20 +475,23 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
 		socketIO.off('antwoord-geselecteerd');
 	});
 
-	// Private functions
-	var updateBar = function () {
+	var questionStart = +new Date();
+	var questionTime = 10;
+	$scope.processBar = 100;
+	$scope.nextButton = false;
+	var tmrProgressBar = setInterval(function () {
 		$scope.$apply(function () {
-			if ($scope.processTime >= 0) {
-				var tmp_var = ($scope.processTime * 1000) / 100;
-				$scope.processBar = tmp_var;
-				$scope.processTime -= 0.1;
+			var now = +new Date();
+			var timePassed = (now - questionStart) / 1000;
+			var timeLeft = questionTime - timePassed;
+			if (timePassed < questionTime) {
+				$scope.processBar = (timeLeft * 1000) / 100;
 			} else {
 				$scope.nextButton = true;
+				clearInterval(tmrProgressBar);
 			}
 		});
-	};
-
-	setInterval(updateBar, 100);
+	}, 100);
 });
 
 /**
