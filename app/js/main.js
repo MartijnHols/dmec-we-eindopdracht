@@ -186,12 +186,18 @@ app.controller('studentLoginCtrl', function ($scope, $location, socketIO, $route
 /**
  * Studenten vraag controller
  */
-app.controller('studentVraagCtrl', function ($rootScope, $scope, $routeParams, VarService) {
+app.controller('studentVraagCtrl', function ($rootScope, $scope, $routeParams, VarService, socketIO) {
 	$scope.vraagNummer = VarService.vraagNr;
 	$scope.vraag = VarService.vraag;
 	$scope.selecteerAntwoord = function (antwoord) {
-		console.log(antwoord);
-		//TODO: Implement
+		socketIO.emit('stuur-antwoord', {
+			vraagId: VarService.vraag.id,
+			antwoord: antwoord
+		}, function (error) {
+			if (error) {
+				throw new Error(error.message);
+			}
+		});
 	};
 });
 
@@ -389,6 +395,10 @@ app.controller('deelnemersCtrl', function ($rootScope, $scope, $location, VarSer
  * Docent vraag controller
  */
 app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, VarService, $location, socketIO) {
+	if (!VarService.vraag) {
+		$location.path('/docent');
+		return;
+	}
 	$scope.vraagNr = VarService.vraagNr;
 	$scope.vraag = VarService.vraag.vraag;
 	$scope.antwoorden = VarService.vraag.antwoorden;

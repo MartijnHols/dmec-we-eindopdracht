@@ -13,6 +13,7 @@
                 <span class="sr-only">{{progress}}% Complete</span>
             </div>
         </div>
+        <!--TODO: deze progress bar werkt niet-->
     </div>
 </div>
 
@@ -23,9 +24,11 @@
 </div>
 
 <div class="row">
-    <div class="col-md-12">
-        <div ng-repeat="antwoord in vraag.antwoorden" class="panel panel-default">
-            <a ng-click="selecteerAntwoord(antwoord)" class="list-group-item">{{antwoord.antwoord}}</a>
+    <div class="col-md-9">
+        <div class="list-group">
+            <!--TODO: Het geselecteerde antwoord markeren, cursor:pointer hierop zetten, opmaak -->
+            <a ng-repeat="antwoord in vraag.antwoorden" ng-click="selecteerAntwoord(antwoord)"
+               class="list-group-item">{{antwoord.antwoord}}</a>
         </div>
     </div>
 </div>

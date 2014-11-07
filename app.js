@@ -100,8 +100,16 @@ function Quiz(id, quizMaster) {
 		this.quizMaster.socket.emit('quiz-end', this.id);
 	};
 
+	/**
+	 * Is er een vraag op dit moment actief waarvan de tijd nog niet is verlopen?
+	 * @returns boolean
+	 */
+	this.isVraagActief = function () {
+		return (this.vraagStartTime && ((+new Date()) - this.vraagStartTime) < maxVraagTijd);
+	};
+
 	this.nextQuestion = function () {
-		if (this.vraagStartTime && ((+new Date()) - this.vraagStartTime) < maxVraagTijd) {
+		if (this.isVraagActief()) {
 			throw {
 				name: "CurrentQuestionTimeError",
 				message: "De tijd voor de huidige vraag is nog niet op."
@@ -286,9 +294,11 @@ var playerController = {
 		}
 		delete this.players[socket.id];
 	},
-	addAntwoord: function (socket, vraagId, antwoord) {
-		var player = this.players[socket.id];
-		player.quiz.addAntwoord(socket, vraagId, antwoord);
+	isLoggedIn: function (socket) {
+		return (this.players[socket.id] !== undefined);
+	},
+	get: function (socket) {
+		return this.players[socket.id];
 	}
 };
 
@@ -548,6 +558,9 @@ io.on("connection", function (socket) {
 
 		var quizMaster = quizMasterController.get(socket);
 		var quiz = quizMaster.activeQuiz;
+		if (!quiz) {
+			return fn({ message: 'Er is geen quiz op dit moment actief.' });
+		}
 		try {
 			quiz.nextQuestion();
 		} catch (error) {
@@ -559,6 +572,18 @@ io.on("connection", function (socket) {
 					return fn(error);
 			}
 		}
+	});
+
+	socket.on('stuur-antwoord', function (options, fn) {
+		if (!playerController.isLoggedIn(socket)) {
+			return fn({message: 'Niet ingelogd.'});
+		}
+
+		var player = playerController.get(socket);
+		if (!player.quiz.isVraagActief()) {
+			return fn({ message: 'De beschikbare tijd om te antwoorden is verlopen.' });
+		}
+		player.addAntwoord(options.vraagId, options.antwoord);
 	});
 });
 
