@@ -184,6 +184,10 @@ app.controller('studentLoginCtrl', function ($scope, $location, socketIO, $route
  * Studenten vraag controller
  */
 app.controller('studentVraagCtrl', function ($rootScope, $scope, $routeParams, VarService, socketIO) {
+	if (!VarService.vraag) {
+		$location.path('/')
+		return;
+	}
     $scope.vraagNummer = VarService.vraagNr;
     $scope.vraag = VarService.vraag;
     $scope.processTime = 10; // In seconds
@@ -224,7 +228,11 @@ app.controller('studentVraagCtrl', function ($rootScope, $scope, $routeParams, V
 /**
  * Studenten ranglijst controller
  */
-app.controller('studentRanglijstCtrl', function ($rootScope, $scope, VarService) {
+app.controller('studentRanglijstCtrl', function ($rootScope, $scope, VarService, $location) {
+	if (!VarService.rangLijst) {
+		$location.path('/');
+		return;
+	}
     $scope.rangLijst = VarService.rangLijst;
 });
 
@@ -491,7 +499,11 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
 /**
  * Docent ranglijst controller
  */
-app.controller('docentRanglijstCtrl', function ($rootScope, $scope, $routeParams, VarService, socketIO) {
+app.controller('docentRanglijstCtrl', function ($rootScope, $scope, $routeParams, VarService, $location) {
+	if (!VarService.rangLijst) {
+		$location.path('/docent');
+		return;
+	}
     $scope.stopQuiz = function () {
         var quizMaster = quizMasterController.get(socket);
         quizMaster.activeQuiz.end();
