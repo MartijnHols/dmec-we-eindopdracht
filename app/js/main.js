@@ -197,8 +197,10 @@ app.controller('studentVraagCtrl', function ($rootScope, $scope, $routeParams, V
     $scope.processTime = 10; // In seconds
     $scope.processBar = 100;
     $scope.processTimeUp = false;
+    $scope.selected = 0;
 
-    $scope.selecteerAntwoord = function (antwoord) {
+    $scope.selecteerAntwoord = function (antwoord, index) {
+        $scope.selected = index;
         if (!$scope.processTimeUp) {
             socketIO.emit('stuur-antwoord', {
                 vraagId: VarService.vraag.id,
