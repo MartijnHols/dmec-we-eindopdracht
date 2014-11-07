@@ -17,9 +17,9 @@
                 </tr>
             </thead>
             <tr ng-repeat="rangItem in rangLijst">
-                <td>{{rangItem.positie}}</td>
+                <td>{{$index + 1}}</td>
                 <td>{{rangItem.naam}}</td>
-                <td>{{rangItem.score}}</td>
+                <td>{{rangItem.score}} / {{rangItem.maxScore}}</td>
             </tr>
         </table>
 

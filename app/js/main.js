@@ -170,6 +170,7 @@ app.controller('studentLoginCtrl', function ($scope, $location, socketIO, $route
 			$location.path('/vraag/' + options.vraagNr);
 		});
 		socketIO.on('ranglijst', function (ranglijst) {
+			VarService.rangLijst = ranglijst;
 			$location.path('/ranglijst');
 		});
 		socketIO.on('quiz-end', function () {
