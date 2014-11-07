@@ -9,7 +9,7 @@
     <div class="col-md-12">
         <div class="progress">
             <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="20" aria-valuemin="0"
-                 aria-valuemax="100" style="width: {{progress}}">
+                 aria-valuemax="100" style="width: {{progress}}%">
                 <span class="sr-only">{{progress}}% Complete</span>
             </div>
         </div>
@@ -17,9 +17,15 @@
 </div>
 
 <div class="row">
+    <div class="col-md-9">
+        <h4>{{vraag.vraag}}</h4>
+    </div>
+</div>
+
+<div class="row">
     <div class="col-md-12">
-        <div class="list-group">
-            <a ng-repeat="vraag in vragen | filter: {collectie_id:vraagNummer}" href="#" class="list-group-item">{{vraag.vraag}}</a>
+        <div ng-repeat="antwoord in vraag.antwoorden" class="panel panel-default">
+            <a ng-click="selecteerAntwoord(antwoord)" class="list-group-item">{{antwoord.antwoord}}</a>
         </div>
     </div>
 </div>

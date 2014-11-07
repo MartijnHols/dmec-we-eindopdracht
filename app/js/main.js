@@ -187,8 +187,12 @@ app.controller('studentLoginCtrl', function ($scope, $location, socketIO, $route
  * Studenten vraag controller
  */
 app.controller('studentVraagCtrl', function ($rootScope, $scope, $routeParams, VarService) {
-	$scope.vraagNummer = $routeParams.vraagNummer;
+	$scope.vraagNummer = VarService.vraagNr;
 	$scope.vraag = VarService.vraag;
+	$scope.selecteerAntwoord = function (antwoord) {
+		console.log(antwoord);
+		//TODO: Implement
+	};
 });
 
 /**

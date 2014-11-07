@@ -56,7 +56,10 @@ function Quiz(id, quizMaster) {
 	 */
 	this.addPlayer = function (player) {
 		if (this.fase !== QuizFase.Open) {
-			throw new Error('De quiz is al gestart: aanmelden is niet meer mogelijk.');
+			throw {
+				name: 'QuizAlreadyStartedError',
+				message: 'De quiz is al gestart: aanmelden is niet meer mogelijk.'
+			};
 		}
 		this.players[player.socket.id] = player;
 	};
@@ -497,8 +500,12 @@ io.on("connection", function (socket) {
 		}
 		// Create player object
 		var player = playerController.addPlayer(socket, options.naam, quiz);
-		// Register player in our quiz
-		quiz.addPlayer(player);
+		try {
+			// Register player in our quiz
+			quiz.addPlayer(player);
+		} catch(error) {
+			return fn(error);
+		}
 		// Let quiz master know
 		//		quiz.quizMaster.socket.emit('player-joined', player.naam);
 		deelnemersUpdate(quiz.quizMaster);
