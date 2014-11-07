@@ -192,6 +192,7 @@ app.controller('studentVraagCtrl', function ($rootScope, $scope, $routeParams, V
 		$location.path('/');
 		return;
 	}
+
     $scope.vraagNummer = VarService.vraagNr;
     $scope.vraag = VarService.vraag;
 
@@ -199,10 +200,9 @@ app.controller('studentVraagCtrl', function ($rootScope, $scope, $routeParams, V
     $scope.processBar = 100;
     $scope.processTimeUp = false;
 
-    // Private functions
-    randomSort = function(vraag) {
-        return Math.random();
-    };
+    $scope.random = function() {
+        return 0.5 - Math.random();
+    }
 
     var updateBar = function () {
         $scope.$apply(function () {

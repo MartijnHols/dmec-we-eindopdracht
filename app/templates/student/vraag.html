@@ -39,7 +39,7 @@
 <div class="row">
     <div class="col-md-12">
         <div class="list-group">
-            <a class="list-group-item" ng-class="processTimeUp ? 'disabled' : ''" ng-repeat="antwoord in vraag.antwoorden" ng-click="selecteerAntwoord(antwoord, $index)">{{antwoord.antwoord}}</a>
+            <a class="list-group-item" ng-class="processTimeUp ? 'disabled' : ''" ng-repeat="antwoord in vraag.antwoorden | orderBy:random" ng-click="selecteerAntwoord(antwoord, $index)">{{antwoord.antwoord}}</a>
         </div>
     </div>
 </div>
