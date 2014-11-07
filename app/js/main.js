@@ -224,6 +224,7 @@ app.controller('studentVraagCtrl', function ($rootScope, $scope, $routeParams, V
 			} else {
 				clearInterval(tmrProgressBar);
 				$scope.processTimeUp = true;
+				$scope.processBar = 0;
 			}
 		});
 	}, 100);
@@ -493,6 +494,7 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
 			} else {
 				$scope.nextButton = true;
 				clearInterval(tmrProgressBar);
+				$scope.processBar = 0;
 			}
 		});
 	}, 100);
