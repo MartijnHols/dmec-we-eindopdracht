@@ -343,6 +343,7 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
 	});
 
 	$scope.toggleAddAnswer = function (questionIndex) {
+        questionIndex++;
 		if ($scope.newAnswer) {
 			$scope.newAnswer = false;
 			$scope.antwoorden = false;
