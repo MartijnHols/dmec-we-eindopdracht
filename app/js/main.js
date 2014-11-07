@@ -102,6 +102,7 @@ app.factory('VarService', function () {
 		rangLijst: null,
 		quizId: null,
 		collectieId: null,
+		quizOpen: false,
 		reset: function () {
 			this.collecties = null;
 			this.vraag = null;
@@ -295,6 +296,10 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
 	$scope.newAnswer = false;
 	$scope.deelnemersBtn = false;
 
+    if(VarService.quizOpen){
+        $scope.deelnemersBtn = true;
+    }
+
 	$scope.vragen = VarService.collecties[$routeParams.id].vragen;
 	$scope.antwoorden = false;
 
@@ -326,6 +331,7 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
 	};
 
 	$scope.openStudentLink = function () {
+        VarService.quizOpen = true;
 		socketIO.emit('open-quiz');
 		socketIO.on('quiz-end', function () {
 			$location.path('/docent');

@@ -125,8 +125,8 @@
             <button type="button" ng-click="newQuestion = !newQuestion" class="btn btn-success col-md-12">Vraag
                 toevoegen <i class="fa fa-plus"></i></button>
         </div>
-        <hr/>
-        <div class="form-group">
+        <ng-hide="deelnemersBtn" hr/>
+        <div ng-hide="deelnemersBtn" class="form-group">
             <a href="#/docent/collecties" class="btn btn-default col-md-12">Terug naar collectie's <i
                     class="fa fa-reply"></i></a>
         </div>
