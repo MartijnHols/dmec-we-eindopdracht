@@ -1,5 +1,5 @@
 # Martijn
- - nadruk leggen in randlijst op plekken 1, 2 en 3 (zie requirements)
+ - Timer pauzeert als je van tab verandert
 
 # Dwayne
  - student krijgt geen feedback als hij moet wachten tot de docent de volgende vraag start / ranglijst opent
