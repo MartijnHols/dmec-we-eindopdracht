@@ -101,6 +101,7 @@ function Quiz(id, quizMaster) {
 			this.removePlayer(player.socket);
 		}
 		this.quizMaster.socket.emit('quiz-end', this.id);
+		this.quizMaster.activeQuiz = null;
 	};
 
 	/**
