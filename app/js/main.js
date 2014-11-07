@@ -233,9 +233,6 @@ app.controller('studentVraagCtrl', function ($rootScope, $scope, $routeParams, V
 			}
 		});
 	}, 100);
-	$scope.random = function () {
-		return Math.random();
-	};
 });
 
 /**
