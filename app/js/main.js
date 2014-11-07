@@ -328,14 +328,6 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
         socketIO.off('quiz-opened');
     });
 
-    $scope.changeVisbility = function (index) {
-        if (VarService.collecties[$routeParams.id].vragen[index].visible) {
-            VarService.collecties[$routeParams.id].vragen[index].visible = false;
-        } else {
-            VarService.collecties[$routeParams.id].vragen[index].visible = true;
-        }
-    };
-
     $scope.toggleAddAnswer = function (questionIndex) {
         if ($scope.newAnswer) {
             $scope.newAnswer = false;
@@ -382,7 +374,7 @@ var docentEventsBound = false;
 app.controller('deelnemersCtrl', function ($rootScope, $scope, $location, VarService, socketIO) {
 	socketIO.emit('get-deelnemers', null, function (error) {
 		if (error) {
-			if(error.message == 'Niet ingelogd'){
+			if(error.message == 'Niet ingelogd.'){
 				$location.path('/docent');
 				return;
 			}
@@ -406,6 +398,11 @@ app.controller('deelnemersCtrl', function ($rootScope, $scope, $location, VarSer
 		socketIO.emit('start-quiz', {
 			quizId: VarService.quizId,
 			vragen: geselecteerdeVragen
+		}, function (error) {
+			console.log(arguments)
+			if (error) {
+				alert(error.message);
+			}
 		});
 	};
 	if (!docentEventsBound) {

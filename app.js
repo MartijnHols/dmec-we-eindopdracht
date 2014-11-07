@@ -83,7 +83,10 @@ function Quiz(id, quizMaster) {
 	 */
 	this.start = function () {
 		if (this.vragen.length === 0) {
-			throw new Error('De quiz kan niet gestart worden zonder vragen.');
+			throw {
+				name: 'GeenVragenError',
+				message: 'De quiz kan niet gestart worden zonder vragen.'
+			};
 		}
 		this.fase = QuizFase.Vragen;
 		this.nextQuestion();
@@ -500,7 +503,11 @@ io.on("connection", function (socket) {
 			return fn({message: 'U bent niet quizmaster van deze quiz.'});
 		}
 		quiz.vragen = options.vragen;
-		quiz.start();
+		try {
+			quiz.start();
+		} catch (error) {
+			return fn(error);
+		}
 	});
 
 	socket.on('player-sign-in', function (options, fn) {
@@ -513,7 +520,7 @@ io.on("connection", function (socket) {
 		try {
 			// Register player in our quiz
 			quiz.addPlayer(player);
-		} catch(error) {
+		} catch (error) {
 			return fn(error);
 		}
 		// Let quiz master know
@@ -543,7 +550,7 @@ io.on("connection", function (socket) {
 		return names;
 	}
 
-	socket.on('get-deelnemers', function (fn) {
+	socket.on('get-deelnemers', function (_, fn) {
 		if (!quizMasterController.isLoggedIn(socket)) {
 			return fn({message: 'Niet ingelogd.'});
 		}
