@@ -535,7 +535,7 @@ io.on("connection", function (socket) {
 		var names = [];
 		for (var socketId in quiz.players) {
 			var item = quiz.players[socketId];
-			names.push({ naam: item.naam });
+			names.push({ socketId: socketId, naam: item.naam });
 		}
 
 		console.log('deelnemers-update', names);
@@ -575,6 +575,7 @@ io.on("connection", function (socket) {
 	});
 
 	socket.on('stuur-antwoord', function (options, fn) {
+		console.log('stuur-antwoord', options);
 		if (!playerController.isLoggedIn(socket)) {
 			return fn({message: 'Niet ingelogd.'});
 		}
@@ -587,7 +588,8 @@ io.on("connection", function (socket) {
 		player.addAntwoord(options.vraagId, options.antwoord);
 
 		quiz.quizMaster.socket.emit('antwoord-geselecteerd', {
-			deelnemer: player,
+			socketId: player.socket.id,
+			naam: player.naam,
 			antwoord: options.antwoord
 		});
 	});

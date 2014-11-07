@@ -201,6 +201,7 @@ app.controller('studentVraagCtrl', function ($rootScope, $scope, $routeParams, V
             }, function (error) {
                 if (error) {
                     throw new Error(error.message);
+                    //TODO: Als tijd is verstreken een nette foutmelding geven en niet overgeven
                 }
             });
         }
@@ -368,6 +369,7 @@ var docentEventsBound = false;
  * Deelnemers controller
  */
 app.controller('deelnemersCtrl', function ($rootScope, $scope, $location, VarService, socketIO) {
+<<<<<<< HEAD
     socketIO.emit('get-deelnemers', null, function (error) {
         if (error) {
             if (error.message == 'Niet ingelogd') {
@@ -411,12 +413,59 @@ app.controller('deelnemersCtrl', function ($rootScope, $scope, $location, VarSer
         // Niet weghalen aan het einde! De bedoeling is dat er meerdere vragen gevangen worden met deze listener
         //socketIO.off('nieuwe-vraag');
     });
+=======
+	socketIO.emit('get-deelnemers', null, function (error) {
+		if (error) {
+			if(error.message == 'Niet ingelogd'){
+				$location.path('/docent');
+				return;
+			}
+			throw new Error(error.message);
+		}
+	});
+	socketIO.on('deelnemers-update', function (deelnemers) {
+		VarService.deelnemers = deelnemers;
+		$scope.deelnemers = VarService.deelnemers;
+	});
+
+	$scope.startQuiz = function () {
+		var collectie = VarService.collecties[VarService.collectieId];
+		var geselecteerdeVragen = [];
+		for (var key in collectie.vragen) {
+			var item = collectie.vragen[key];
+			if (item.visible) {
+				geselecteerdeVragen.push(item);
+			}
+		}
+		socketIO.emit('start-quiz', {
+			quizId: VarService.quizId,
+			vragen: geselecteerdeVragen
+		});
+	};
+	if (!docentEventsBound) {
+		socketIO.on('nieuwe-vraag', function (options) {
+			console.log('Vraag #' + options.vraagNr + ' ontvangen: ' + options.vraag.vraag, options);
+			VarService.vraagNr = options.vraagNr;
+			VarService.aantalVragen = options.aantalVragen;
+			VarService.vraag = options.vraag;
+			$location.path('/docent/vraag/' + options.vraagNr);
+		});
+		docentEventsBound = true;
+	}
+
+	$scope.$on('$destroy', function () {
+		socketIO.off('deelnemers-update');
+		// Niet weghalen aan het einde! De bedoeling is dat er meerdere vragen gevangen worden met deze listener
+		//socketIO.off('nieuwe-vraag');
+	});
+>>>>>>> FETCH_HEAD
 });
 
 /**
  * Docent vraag controller
  */
 app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, VarService, $location, socketIO) {
+<<<<<<< HEAD
     if (!VarService.vraag) {
         $location.path('/docent');
         return;
@@ -477,6 +526,78 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
     };
 
     setInterval(updateBar, 100);
+=======
+	if (!VarService.vraag) {
+		$location.path('/docent');
+		return;
+	}
+	$scope.vraagNr = VarService.vraagNr;
+	$scope.vraag = VarService.vraag;
+	$scope.vraag = VarService.vraag;
+	$scope.deelnemerKeuzes = [];
+	for (var key in VarService.deelnemers) {
+		var deelnemer = VarService.deelnemers[key];
+		$scope.deelnemerKeuzes.push({
+			socketId: deelnemer.socketId,
+			naam: deelnemer.naam,
+			antwoord: null
+		});
+	}
+
+	$scope.processTime = 10; // In seconds
+	$scope.processBar = 100;
+	$scope.nextButton = false;
+
+	if ($scope.vraagNr == VarService.aantalVragen) { // vraagNr telling begint bij 1 i.p.v. 0 dus dit hoort te werken
+		$scope.nextButtonText = 'Bekijk resulaten';
+	} else {
+		$scope.nextButtonText = 'Volgende vraag';
+	}
+
+	$scope.nextQuestion = function () {
+		socketIO.emit('next-question', null, function (error) {
+			switch (error.name) {
+				case 'CurrentQuestionTimeError':
+					alert('Wacht tot de huidige vraag klaar is.');
+					return;
+				default:
+					throw error;
+			}
+		});
+	};
+	socketIO.on('ranglijst', function (ranglijst) {
+		VarService.rangLijst = ranglijst;
+		$location.path('/docent/ranglijst');
+	});
+	socketIO.on('antwoord-geselecteerd', function (options) {
+		for (var key in $scope.deelnemerKeuzes) {
+			var deelnemerKeuze = $scope.deelnemerKeuzes[key];
+			if (deelnemerKeuze.socketId === options.socketId) {
+				deelnemerKeuze.antwoord = options.antwoord;
+			}
+		}
+	});
+
+	$scope.$on('$destroy', function () {
+		socketIO.off('ranglijst');
+		socketIO.off('antwoord-geselecteerd');
+	});
+
+	// Private functions
+	var updateBar = function () {
+		$scope.$apply(function () {
+			if ($scope.processTime >= 0) {
+				var tmp_var = ($scope.processTime * 1000) / 100;
+				$scope.processBar = tmp_var;
+				$scope.processTime -= 0.1;
+			} else {
+				$scope.nextButton = true;
+			}
+		});
+	};
+
+	setInterval(updateBar, 100);
+>>>>>>> FETCH_HEAD
 });
 
 /**

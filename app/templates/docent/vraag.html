@@ -38,13 +38,13 @@
         <div ng-repeat="antwoord in vraag.antwoorden" class="panel panel-default">
             <div class="panel-heading">{{antwoord.antwoord}} <span class="label label-default pull-right">{{antwoord.score}}</span></div>
             <div class="panel-body">
-                <span class="label label-primary" ng-repeat="selectie in deelnemerSelecties | filter:{ antwoord: { id: antwoord.id } }">{{selectie.player.naam}}</span>
+                <span class="label label-primary" ng-repeat="keuze in deelnemerKeuzes | filter:{ antwoord: { id: antwoord.id } }">{{keuze.naam}}</span>
             </div>
         </div>
         <div class="panel panel-danger">
             <div class="panel-heading">Niet beantwoord</div>
             <div class="panel-body">
-                <span class="label label-primary">NYI</span>
+                <span class="label label-primary" ng-repeat="keuze in deelnemerKeuzes | filter:{ antwoord: null }">{{keuze.naam}}</span>
             </div>
         </div>
     </div>
