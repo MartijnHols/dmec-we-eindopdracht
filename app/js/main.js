@@ -140,7 +140,8 @@ app.controller('docentLoginCtrl', function ($scope, $location, socketIO, VarServ
 	});
 });
 
-app.controller('studentLoginCtrl', function ($scope, $location, socketIO, $routeParams) {
+var studentEventsBound = false;
+app.controller('studentLoginCtrl', function ($scope, $location, socketIO, $routeParams, VarService) {
 	$scope.quizPass = $routeParams.quizPass;
 	$scope.loginError = false;
 
@@ -160,6 +161,22 @@ app.controller('studentLoginCtrl', function ($scope, $location, socketIO, $route
 		$scope.naam = username;
 		$location.path('/wachten');
 	});
+	if (!studentEventsBound) {
+		socketIO.on('nieuwe-vraag', function (options) {
+			console.log('Vraag #' + options.vraagNr + ' ontvangen: ' + options.vraag.vraag, options);
+			VarService.vraagNr = options.vraagNr;
+			VarService.aantalVragen = options.aantalVragen;
+			VarService.vraag = options.vraag;
+			$location.path('/vraag/' + options.vraagNr);
+		});
+		socketIO.on('ranglijst', function (ranglijst) {
+			$location.path('/ranglijst');
+		});
+		socketIO.on('quiz-end', function () {
+			$location.path('/');
+		});
+		studentEventsBound = true;
+	}
 
 	$scope.$on('$destroy', function () {
 		socketIO.off('player-sign-in-success');
@@ -318,6 +335,7 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
 	}
 });
 
+var docentEventsBound = false;
 /**
  * Deelnemers controller
  */
@@ -341,13 +359,16 @@ app.controller('deelnemersCtrl', function ($rootScope, $scope, $location, VarSer
 			vragen: geselecteerdeVragen
 		});
 	};
-	socketIO.on('nieuwe-vraag', function (options) {
-		console.log('Vraag #' + options.vraagNr + ' ontvangen: ' + options.vraag.vraag, options);
-		VarService.vraagNr = options.vraagNr;
-		VarService.aantalVragen = options.aantalVragen;
-		VarService.vraag = options.vraag;
-		$location.path('/docent/vraag/' + options.vraagNr);
-	});
+	if (!docentEventsBound) {
+		socketIO.on('nieuwe-vraag', function (options) {
+			console.log('Vraag #' + options.vraagNr + ' ontvangen: ' + options.vraag.vraag, options);
+			VarService.vraagNr = options.vraagNr;
+			VarService.aantalVragen = options.aantalVragen;
+			VarService.vraag = options.vraag;
+			$location.path('/docent/vraag/' + options.vraagNr);
+		});
+		docentEventsBound = true;
+	}
 
 	$scope.$on('$destroy', function () {
 		socketIO.off('deelnemers-update');

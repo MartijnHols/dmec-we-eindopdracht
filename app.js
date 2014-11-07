@@ -65,6 +65,7 @@ function Quiz(id, quizMaster) {
 	 * @param socket
 	 */
 	this.removePlayer = function (socket) {
+		socket.emit('quiz-end', this.id);
 		delete this.players[socket.id];
 		this.quizMaster.socket.emit('player-left', socket.id);
 	};
@@ -90,7 +91,8 @@ function Quiz(id, quizMaster) {
 	this.end = function () {
 		var players = this.players;
 		for (var socketId in players) {
-			this.removePlayer(socketId);
+			var player = players[socketId];
+			this.removePlayer(player.socket);
 		}
 		this.quizMaster.socket.emit('quiz-end', this.id);
 	};
@@ -242,7 +244,7 @@ var quizController = {
 	logout: function (socket) {
 		for (var i = 0, len = this.quizesActief.length; i < len; i++) {
 			var quiz = this.quizesActief[i];
-			quiz.removePlayer(socket.id);
+			quiz.removePlayer(socket);
 			if (quiz.quizMaster.socket.id == socket.id) {
 				this.stopQuiz(quiz.id);
 			}
@@ -483,7 +485,7 @@ io.on("connection", function (socket) {
 	socket.on('player-sign-in', function (options, fn) {
 		var quiz = quizController.get(options.quizId);
 		if (!quiz) {
-			return fn({message: 'Deze quiz bestaat niet.'});
+			return fn({message: 'Er bestaat geen quiz met deze code.'});
 		}
 		// Create player object
 		var player = playerController.addPlayer(socket, options.naam, quiz);
@@ -503,12 +505,15 @@ io.on("connection", function (socket) {
 	function deelnemersUpdate(quizMaster) {
 		console.log('deelnemersUpdate');
 
+		var quiz = quizMaster.activeQuiz;
+
 		var names = [];
-		for (var socketId in quizMaster.activeQuiz.players) {
-			var item = quizMaster.activeQuiz.players[socketId];
+		for (var socketId in quiz.players) {
+			var item = quiz.players[socketId];
 			names.push({ naam: item.naam });
 		}
 
+		console.log('deelnemers-update', names);
 		quizMaster.socket.emit('deelnemers-update', names);
 		return names;
 	}
