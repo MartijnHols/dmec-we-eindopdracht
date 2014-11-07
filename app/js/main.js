@@ -194,6 +194,11 @@ app.controller('studentVraagCtrl', function ($rootScope, $scope, $routeParams, V
 	}
 	$scope.vraagNummer = VarService.vraagNr;
 	$scope.vraag = VarService.vraag;
+	for (var key in VarService.vraag.antwoorden) {
+		var antwoord = VarService.vraag.antwoorden[key];
+		antwoord.orderKey = Math.random();
+	}
+	console.log(VarService.vraag.antwoorden);
 	$scope.processTimeUp = false;
 
 	$scope.selecteerAntwoord = function (antwoord) {
@@ -228,7 +233,7 @@ app.controller('studentVraagCtrl', function ($rootScope, $scope, $routeParams, V
 			}
 		});
 	}, 100);
-	$scope.randomSort = function (vraag) {
+	$scope.random = function () {
 		return Math.random();
 	};
 });
