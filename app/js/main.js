@@ -102,7 +102,7 @@ app.factory('VarService', function () {
 		rangLijst: null,
 		quizId: null,
 		collectieId: null,
-		quizOpen: false,
+		quizOpen: null,
 		reset: function () {
 			this.collecties = null;
 			this.vraag = null;
@@ -110,6 +110,7 @@ app.factory('VarService', function () {
 			this.rangLijst = null;
 			this.quizId = null;
 			this.collectieId = null;
+			this.quizOpen = null;
 		}
 	};
 });
@@ -296,7 +297,7 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
 	$scope.newAnswer = false;
 	$scope.deelnemersBtn = false;
 
-    if(VarService.quizOpen){
+    if (VarService.quizOpen) {
         $scope.deelnemersBtn = true;
     }
 
@@ -376,15 +377,19 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
 	// Private function
 	function getNewId() {
 		var tmp_array = [];
-		for (var i = 0; i < VarService.collecties[$routeParams.id].vragen.length; i++) {
-			tmp_array.push(VarService.collecties[$routeParams.id].vragen[i].id);
+		for (var collectieId in VarService.collecties) {
+			var collectie = VarService.collecties[collectieId];
+			for (var vraagId in collectie.vragen) {
+				var vraag = collectie.vragen[vraagId];
+				tmp_array.push(vraag.id);
+			}
 		}
 		return Math.max.apply(Math, tmp_array) + 1;
 	}
 
 	$scope.getCollectionName = function (collectie_id) {
 		return VarService.collecties[collectie_id].naam;
-	}
+	};
 });
 
 var docentEventsBound = false;
