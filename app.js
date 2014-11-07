@@ -306,6 +306,15 @@ var playerController = {
 		}
 		delete this.players[socket.id];
 	},
+	isNameInUse: function (naam) {
+		for (var socketId in this.players) {
+			var player = this.players[socketId];
+			if (player.naam.toLowerCase() == naam.toLowerCase()) {
+				return true;
+			}
+		}
+		return false;
+	},
 	isLoggedIn: function (socket) {
 		return (this.players[socket.id] !== undefined);
 	},
@@ -533,6 +542,9 @@ io.on("connection", function (socket) {
 	});
 
 	socket.on('player-sign-in', function (options, fn) {
+		if (playerController.isNameInUse(options.naam)) {
+			return fn({ message: 'Deze naam wordt al gebruikt. Voer een andere naam in.' });
+		}
 		var quiz = quizController.get(options.quizId);
 		if (!quiz) {
 			return fn({message: 'Er bestaat geen quiz met deze code.'});
