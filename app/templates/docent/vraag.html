@@ -7,7 +7,7 @@
 
 <div class="row">
     <div class="col-md-9">
-        <h4>{{vraag}}</h4>
+        <h4>{{vraag.vraag}}</h4>
     </div>
     <div class="col-md-3">
         <div class="form-group pull-right">
@@ -28,7 +28,7 @@
         <div class="progress">
             <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="20" aria-valuemin="0"
                  aria-valuemax="100" style="width: {{processBar}}%">
-                <span class="sr-only">20% Complete</span>
+                <span class="sr-only">{{processBar}}% Complete</span>
             </div>
         </div>
     </div>
@@ -36,22 +36,16 @@
 
 <div class="row">
     <div class="col-md-12">
-        <div ng-repeat="antwoord in antwoorden" class="panel panel-default">
+        <div ng-repeat="antwoord in vraag.antwoorden" class="panel panel-default">
             <div class="panel-heading">{{antwoord.antwoord}} <span class="label label-default pull-right">{{antwoord.score}}</span></div>
             <div class="panel-body">
-                <span class="label label-primary">Dwayne</span>
-                <span class="label label-primary">Dwayne</span>
-                <span class="label label-primary">Dwayne</span>
-                <span class="label label-primary">Dwayne</span>
+                <span class="label label-primary" ng-repeat="selectie in deelnemerSelecties | filter:{ antwoord: { id: antwoord.id } }">{{selectie.player.naam}}</span>
             </div>
         </div>
         <div class="panel panel-danger">
             <div class="panel-heading">Niet beantwoord</div>
             <div class="panel-body">
-                <span class="label label-primary">Dwayne</span>
-                <span class="label label-primary">Dwayne</span>
-                <span class="label label-primary">Dwayne</span>
-                <span class="label label-primary">Dwayne</span>
+                <span class="label label-primary">NYI</span>
             </div>
         </div>
     </div>

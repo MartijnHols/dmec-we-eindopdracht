@@ -580,10 +580,16 @@ io.on("connection", function (socket) {
 		}
 
 		var player = playerController.get(socket);
-		if (!player.quiz.isVraagActief()) {
+		var quiz = player.quiz;
+		if (!quiz.isVraagActief()) {
 			return fn({ message: 'De beschikbare tijd om te antwoorden is verlopen.' });
 		}
 		player.addAntwoord(options.vraagId, options.antwoord);
+
+		quiz.quizMaster.socket.emit('antwoord-geselecteerd', {
+			deelnemer: player,
+			antwoord: options.antwoord
+		});
 	});
 });
 

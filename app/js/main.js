@@ -400,14 +400,14 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
 		return;
 	}
 	$scope.vraagNr = VarService.vraagNr;
-	$scope.vraag = VarService.vraag.vraag;
-	$scope.antwoorden = VarService.vraag.antwoorden;
+	$scope.vraag = VarService.vraag;
+	$scope.deelnemerSelecties = {};
 
 	$scope.processTime = 10; // In seconds
 	$scope.processBar = 100;
 	$scope.nextButton = false;
 
-	if ($scope.vraagNr == VarService.aantalVragen) {
+	if ($scope.vraagNr == VarService.aantalVragen) { // vraagNr telling begint bij 1 i.p.v. 0 dus dit hoort te werken
 		$scope.nextButtonText = 'Bekijk resulaten';
 	} else {
 		$scope.nextButtonText = 'Volgende vraag';
@@ -428,9 +428,17 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
 		VarService.rangLijst = ranglijst;
 		$location.path('/docent/ranglijst');
 	});
+	socketIO.on('antwoord-geselecteerd', function (options) {
+		var player = options.player;
+		$scope.deelnemerSelecties[player.socket.id] = {
+			player: player,
+			antwoord: options.antwoord
+		};
+	});
 
 	$scope.$on('$destroy', function () {
 		socketIO.off('ranglijst');
+		socketIO.off('antwoord-geselecteerd');
 	});
 
 	// Private functions
