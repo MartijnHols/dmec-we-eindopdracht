@@ -302,7 +302,6 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
     }
 
 	$scope.vragen = VarService.collecties[$routeParams.id].vragen;
-	$scope.antwoorden = false;
 
 	$scope.addQuestion = function (collectie_id, newQuestionInput) {
 		$scope.newQuestion = false;
@@ -351,19 +350,32 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
 
 	$scope.toggleAddAnswer = function (vraagId) {
 		if ($scope.newAnswer) {
+			$scope.geselecteerdeVraag = null;
 			$scope.newAnswer = false;
-			$scope.antwoorden = false;
-			$scope.vraagTitle = false;
 		} else {
-			$scope.vraagTitle = VarService.collecties[$routeParams.id].vragen[vraagId].vraag;
-			$scope.antwoorden = VarService.collecties[$routeParams.id].vragen[vraagId].antwoorden;
+			$scope.geselecteerdeVraag = VarService.collecties[$routeParams.id].vragen[vraagId];
 			$scope.newAnswer = true;
 		}
 	};
 
-	$scope.addAnswer = function (newAnswerInput, scoreInput) {
+	function getNextAntwoordId(antwoorden) {
+		var maxId = 0;
+		for (var antwoordId in antwoorden) {
+			var antwoord = antwoorden[antwoordId];
+			if (antwoord.id > maxId) {
+				maxId = antwoord.id;
+			}
+		}
+		return maxId + 1;
+	}
+
+	$scope.addAnswer = function (vraagId, newAnswerInput, scoreInput) {
 		if (newAnswerInput.length > 0) {
-			$scope.antwoorden.push({id: 0, antwoord: newAnswerInput, score: scoreInput});
+			VarService.collecties[$routeParams.id].vragen[vraagId].antwoorden.push({
+				id: getNextAntwoordId(VarService.collecties[$routeParams.id].vragen[vraagId].antwoorden),
+				antwoord: newAnswerInput,
+				score: parseInt(scoreInput)
+			});
 
 			$scope.newAnswerInput = '';
 			$scope.scoreInput = '';
@@ -371,7 +383,7 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
 	};
 
 	$scope.deleteAnswer = function (index) {
-		$scope.antwoorden.splice(index, 1);
+		$scope.geselecteerdeVraag.antwoorden.splice(index, 1);
 	};
 
 	// Private function

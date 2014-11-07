@@ -26,7 +26,7 @@
 
 <div class="row" ng-show="newAnswer">
     <div class="col-md-12">
-        <h4>{{vraagTitle}}</h4>
+        <h4>{{geselecteerdeVraag.vraag}}</h4>
     </div>
 </div>
 
@@ -53,7 +53,7 @@
     <div class="btn-group col-md-3">
         <button type="button" class="btn btn-danger col-md-6" ng-click="toggleAddAnswer()"><i class="fa fa-times"></i>
         </button>
-        <button type="button" class="btn btn-success col-md-6" ng-click="addAnswer(newAnswerInput, scoreInput)"><i
+        <button type="button" class="btn btn-success col-md-6" ng-click="addAnswer(geselecteerdeVraag.id, newAnswerInput, scoreInput)"><i
                 class="fa fa-plus"></i></button>
     </div>
 </div>
@@ -70,7 +70,7 @@
                 <td></td>
             </thead>
             <tbody>
-            <tr ng-repeat="antwoord in antwoorden">
+            <tr ng-repeat="antwoord in geselecteerdeVraag.antwoorden">
                 <td>{{antwoord.antwoord}}</td>
                 <td>{{antwoord.score}}</td>
                 <td>
