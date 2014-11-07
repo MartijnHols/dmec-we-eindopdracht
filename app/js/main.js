@@ -348,15 +348,14 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
 		socketIO.off('quiz-opened');
 	});
 
-	$scope.toggleAddAnswer = function (questionIndex) {
-        questionIndex++;
+	$scope.toggleAddAnswer = function (vraagId) {
 		if ($scope.newAnswer) {
 			$scope.newAnswer = false;
 			$scope.antwoorden = false;
 			$scope.vraagTitle = false;
 		} else {
-			$scope.vraagTitle = VarService.collecties[$routeParams.id].vragen[questionIndex].vraag;
-			$scope.antwoorden = VarService.collecties[$routeParams.id].vragen[questionIndex].antwoorden;
+			$scope.vraagTitle = VarService.collecties[$routeParams.id].vragen[vraagId].vraag;
+			$scope.antwoorden = VarService.collecties[$routeParams.id].vragen[vraagId].antwoorden;
 			$scope.newAnswer = true;
 		}
 	};

@@ -97,7 +97,7 @@
                 <td>{{vraag.vraag}}</td>
                 <td>
                     <div class="btn-group pull-right">
-                        <a ng-click="toggleAddAnswer($index)" title="Antwoorden toevoegen"  class="btn btn-default"><i
+                        <a ng-click="toggleAddAnswer(vraag.id)" title="Antwoorden toevoegen"  class="btn btn-default"><i
                                 class="fa fa-plus"></i></a>
                         <button style="min-width:40px;" title="{{vraag.visible ? 'Wel' : 'Niet'}} zichtbaar" type="button"
                                 class="btn btn-default" ng-click="vraag.visible=!vraag.visible">
