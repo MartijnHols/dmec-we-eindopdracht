@@ -509,6 +509,19 @@ io.on("connection", function (socket) {
 			return fn(error);
 		}
 	});
+	socket.on('end-quiz', function (_, fn) {
+		if (!quizMasterController.isLoggedIn(socket)) {
+			return fn({message: 'Niet ingelogd.'});
+		}
+
+		var quizMaster = quizMasterController.get(socket);
+		var quiz = quizMaster.activeQuiz;
+		try {
+			quiz.end();
+		} catch (error) {
+			return fn(error);
+		}
+	});
 
 	socket.on('player-sign-in', function (options, fn) {
 		var quiz = quizController.get(options.quizId);

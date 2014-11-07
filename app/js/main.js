@@ -98,10 +98,18 @@ app.factory('VarService', function () {
 	return {
 		collecties: null,
 		vraag: null,
-		vraagNr: 0,
+		vraagNr: null,
 		rangLijst: null,
 		quizId: null,
-		collectieId: null
+		collectieId: null,
+		reset: function () {
+			this.collecties = null;
+			this.vraag = null;
+			this.vraagNr = null;
+			this.rangLijst = null;
+			this.quizId = null;
+			this.collectieId = null;
+		}
 	};
 });
 
@@ -112,6 +120,7 @@ app.controller('linkCtrl', function ($scope, $routeParams) {
 });
 
 app.controller('docentLoginCtrl', function ($scope, $location, socketIO, VarService) {
+	VarService.reset();
 	$scope.loginError = false;
 	$scope.loginMessage = 'De opgegeven gebruikersnaam of wachtwoord zijn niet correct, probeer opnieuw.';
 
@@ -142,6 +151,7 @@ app.controller('docentLoginCtrl', function ($scope, $location, socketIO, VarServ
 
 var studentEventsBound = false;
 app.controller('studentLoginCtrl', function ($scope, $location, socketIO, $routeParams, VarService) {
+	VarService.reset();
 	$scope.token = $routeParams.quizPass;
 	$scope.loginError = false;
 
@@ -318,7 +328,7 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
 	$scope.openStudentLink = function () {
 		socketIO.emit('open-quiz');
 		socketIO.on('quiz-end', function () {
-			$location.path('/docent/collecties');
+			$location.path('/docent');
 		});
 	};
 
@@ -511,8 +521,11 @@ app.controller('docentRanglijstCtrl', function ($rootScope, $scope, $routeParams
 		return;
 	}
 	$scope.stopQuiz = function () {
-		var quizMaster = quizMasterController.get(socket);
-		quizMaster.activeQuiz.end();
+		socket.emit('end-quiz', null, function (error) {
+			if (error) {
+				throw error;
+			}
+		});
 	};
 
 	$scope.rangLijst = VarService.rangLijst;
