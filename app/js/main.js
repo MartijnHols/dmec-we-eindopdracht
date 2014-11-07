@@ -187,30 +187,17 @@ app.controller('studentLoginCtrl', function ($scope, $location, socketIO, $route
 /**
  * Studenten vraag controller
  */
-app.controller('studentVraagCtrl', function ($rootScope, $scope, $routeParams, VarService, socketIO) {
+app.controller('studentVraagCtrl', function ($rootScope, $scope, $routeParams, VarService, socketIO, $location) {
 	if (!VarService.vraag) {
-		$location.path('/')
+		$location.path('/');
 		return;
 	}
     $scope.vraagNummer = VarService.vraagNr;
     $scope.vraag = VarService.vraag;
+
     $scope.processTime = 10; // In seconds
     $scope.processBar = 100;
     $scope.processTimeUp = false;
-
-    $scope.selecteerAntwoord = function (antwoord, index) {
-        if (!$scope.processTimeUp) {
-            socketIO.emit('stuur-antwoord', {
-                vraagId: VarService.vraag.id,
-                antwoord: antwoord
-            }, function (error) {
-                if (error) {
-                    throw new Error(error.message);
-                    //TODO: Als tijd is verstreken een nette foutmelding geven en niet overgeven
-                }
-            });
-        }
-    };
 
     // Private functions
     randomSort = function(vraag) {
@@ -230,6 +217,23 @@ app.controller('studentVraagCtrl', function ($rootScope, $scope, $routeParams, V
     };
 
     setInterval(updateBar, 100);
+
+	var questionStart = +new Date();
+	var questionTime = 10;
+	$scope.processBar = 100;
+	var tmrProgressBar = setInterval(function () {
+		$scope.$apply(function () {
+			var now = +new Date();
+			var timePassed = (now - questionStart) / 1000;
+			var timeLeft = questionTime - timePassed;
+			if (timePassed < questionTime) {
+				$scope.processBar = (timeLeft * 1000) / 100;
+			} else {
+				clearInterval(tmrProgressBar);
+				$scope.processTimeUp = true;
+			}
+		});
+	}, 100);
 
 });
 
@@ -330,14 +334,6 @@ app.controller('collectieCtrl', function ($rootScope, $scope, $routeParams, VarS
         socketIO.off('quiz-opened');
     });
 
-    $scope.changeVisbility = function (index) {
-        if (VarService.collecties[$routeParams.id].vragen[index].visible) {
-            VarService.collecties[$routeParams.id].vragen[index].visible = false;
-        } else {
-            VarService.collecties[$routeParams.id].vragen[index].visible = true;
-        }
-    };
-
     $scope.toggleAddAnswer = function (questionIndex) {
         if ($scope.newAnswer) {
             $scope.newAnswer = false;
@@ -384,7 +380,7 @@ var docentEventsBound = false;
 app.controller('deelnemersCtrl', function ($rootScope, $scope, $location, VarService, socketIO) {
 	socketIO.emit('get-deelnemers', null, function (error) {
 		if (error) {
-			if(error.message == 'Niet ingelogd'){
+			if(error.message == 'Niet ingelogd.'){
 				$location.path('/docent');
 				return;
 			}
@@ -408,6 +404,10 @@ app.controller('deelnemersCtrl', function ($rootScope, $scope, $location, VarSer
 		socketIO.emit('start-quiz', {
 			quizId: VarService.quizId,
 			vragen: geselecteerdeVragen
+		}, function (error) {
+			if (error) {
+				alert(error.message);
+			}
 		});
 	};
 	if (!docentEventsBound) {
@@ -449,10 +449,6 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
 		});
 	}
 
-	$scope.processTime = 10; // In seconds
-	$scope.processBar = 100;
-	$scope.nextButton = false;
-
 	if ($scope.vraagNr == VarService.aantalVragen) { // vraagNr telling begint bij 1 i.p.v. 0 dus dit hoort te werken
 		$scope.nextButtonText = 'Bekijk resulaten';
 	} else {
@@ -488,20 +484,23 @@ app.controller('docentVraagCtrl', function ($rootScope, $scope, $routeParams, Va
 		socketIO.off('antwoord-geselecteerd');
 	});
 
-	// Private functions
-	var updateBar = function () {
+	var questionStart = +new Date();
+	var questionTime = 10;
+	$scope.processBar = 100;
+	$scope.nextButton = false;
+	var tmrProgressBar = setInterval(function () {
 		$scope.$apply(function () {
-			if ($scope.processTime >= 0) {
-				var tmp_var = ($scope.processTime * 1000) / 100;
-				$scope.processBar = tmp_var;
-				$scope.processTime -= 0.1;
+			var now = +new Date();
+			var timePassed = (now - questionStart) / 1000;
+			var timeLeft = questionTime - timePassed;
+			if (timePassed < questionTime) {
+				$scope.processBar = (timeLeft * 1000) / 100;
 			} else {
 				$scope.nextButton = true;
+				clearInterval(tmrProgressBar);
 			}
 		});
-	};
-
-	setInterval(updateBar, 100);
+	}, 100);
 });
 
 /**

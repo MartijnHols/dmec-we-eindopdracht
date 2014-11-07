@@ -15,7 +15,7 @@
                     <td>Score</td>
                 </tr>
             </thead>
-            <tr ng-repeat="rangItem in rangLijst | orderBy:'score':true | filter:search">
+            <tr ng-repeat="rangItem in rangLijst | orderBy:'score':true | filter:search" class="rank{{$index + 1}}">
                 <td>{{$index + 1}}</td>
                 <td>{{rangItem.naam}}</td>
                 <td>{{rangItem.score}} / {{rangItem.maxScore}}</td>
