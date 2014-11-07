@@ -24,9 +24,15 @@
 <div class="row">
     <div class="col-md-12">
         <div class="list-group">
-            <!--TODO: Het geselecteerde antwoord markeren, cursor:pointer hierop zetten, opmaak -->
-            <a ng-repeat="antwoord in vraag.antwoorden" ng-click="selecteerAntwoord(antwoord)"
-               class="list-group-item">{{antwoord.antwoord}}</a>
+            <a class="list-group-item" ng-class="processTimeUp ? 'disabled' : ''" ng-repeat="antwoord in vraag.antwoorden" ng-click="selecteerAntwoord(antwoord)">{{antwoord.antwoord}}</a>
         </div>
     </div>
 </div>
+
+<style>
+    .disabled {
+        background-color: #eee;
+        color: #777;
+        cursor: not-allowed;
+    }
+</style>
