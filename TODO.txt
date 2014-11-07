@@ -1,5 +1,4 @@
 # Martijn
- - Timer pauzeert als je van tab verandert
 
 # Dwayne
  - vragen random
