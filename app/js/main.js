@@ -157,6 +157,10 @@ app.controller('studentLoginCtrl', function ($scope, $location, socketIO, $route
         });
     };
 
+	socketIO.on('player-sign-in-success', function (username) {
+		$scope.naam = username;
+		$location.path('/wachten');
+	});
 	if (!studentEventsBound) {
 		socketIO.on('nieuwe-vraag', function (options) {
 			console.log('Vraag #' + options.vraagNr + ' ontvangen: ' + options.vraag.vraag, options);
