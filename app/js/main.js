@@ -189,6 +189,9 @@ app.controller('studentLoginCtrl', function ($scope, $location, socketIO, $route
 app.controller('studentVraagCtrl', function ($rootScope, $scope, $routeParams, VarService, socketIO) {
 	$scope.vraagNummer = VarService.vraagNr;
 	$scope.vraag = VarService.vraag;
+    $scope.processTime = 10; // In seconds
+    $scope.processBar = 100;
+
 	$scope.selecteerAntwoord = function (antwoord) {
 		socketIO.emit('stuur-antwoord', {
 			vraagId: VarService.vraag.id,
@@ -199,6 +202,22 @@ app.controller('studentVraagCtrl', function ($rootScope, $scope, $routeParams, V
 			}
 		});
 	};
+
+    // Private functions
+    var updateBar = function () {
+        $scope.$apply(function () {
+            if ($scope.processTime >= 0) {
+                var tmp_var = ($scope.processTime * 1000) / 100;
+                $scope.processBar = tmp_var;
+                $scope.processTime -= 0.1;
+            } else {
+                $scope.nextButton = true;
+            }
+        });
+    };
+
+    setInterval(updateBar, 100);
+
 });
 
 /**
