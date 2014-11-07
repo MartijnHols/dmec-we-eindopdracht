@@ -2,6 +2,5 @@
  - Timer pauzeert als je van tab verandert
 
 # Dwayne
- - student krijgt geen feedback als hij moet wachten tot de docent de volgende vraag start / ranglijst opent
  - vragen random
  - Fix bug: als je naar deelnemers gaat, dan weer terug naar vragen, dan moet je quiz opnieuw open zetten
